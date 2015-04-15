@@ -1,0 +1,47 @@
+{% extends 'proyectos/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Create Project</title>
+</head>
+<body>
+	
+	{% block page_wrapper %}
+	<div id="page-inner">
+
+		<div class="row">
+	        <div class="col-md-12">
+	        	{% ifequal action 'create' %}
+		            <h1 class="page-header">
+		                Crear Proyecto <small>A la espera de algo emocionante</small>
+		            </h1>
+	            {% endifequal %}
+
+	            {% ifequal action 'update' %}
+		            <h1 class="page-header">
+		                Actualizar Proyecto <small>Sigue en el camino correcto</small>
+		            </h1>
+	            {% endifequal %}
+	        </div>
+	    </div> 
+	    <!-- /. ROW  -->
+	    
+		<form action="" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			
+			{% ifequal action 'create' %}
+				<input type="submit" value="Crear" class="btn btn-success bt-lg">
+			{% endifequal %}
+
+			{% ifequal action 'update' %}
+				<input type="submit" value="Actualizar" class="btn btn-success bt-lg">
+			{% endifequal %}
+		</form>
+
+	</div>
+	{% endblock page_wrapper %}
+
+</body>
+</html>

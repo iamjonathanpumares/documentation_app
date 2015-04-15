@@ -1,0 +1,10 @@
+.btn-crear-proyecto
+{
+	margin: 0.8em;
+}
+
+.panel-proyecto:hover
+{
+	color: #B5B5B5;
+	background: #2B2E33;
+}

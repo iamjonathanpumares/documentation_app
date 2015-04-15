@@ -1,0 +1,97 @@
+{% extends 'proyectos/base.html' %}
+{% load staticfiles %}
+
+{% block elements_navbar %}
+    <a href="/proyectos/create/" class="btn btn-success btn-crear-proyecto">Crear Proyecto</a>
+{% endblock elements_navbar %}
+
+{% block page_wrapper %}
+
+	<div id="page-inner">
+
+		<!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Eliminar Proyecto</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Desea eliminar todo el contenido de su proyecto <span id="js-spanNameProject"></span>?</p>
+		      </div>
+		      <div class="modal-footer">
+		      	<form method="post" id="js-frmEliminar">
+		      		{% csrf_token %}
+		      		<input type="hidden" id="modal_id_proyecto" name="proyecto_id" />
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="submit" class="btn btn-danger">Eliminar</button>
+			    </form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
+		<div class="row">
+	        <div class="col-md-12">
+	            <h1 class="page-header">
+	                Mis Proyectos <small>(Lista de proyectos)</small>
+	            </h1>
+	        </div>
+	    </div> 
+	    <!-- /. ROW  -->
+
+		<div class="row" id="js-rowProject">
+			{% for proyecto in object_list %}
+			    <div class="col-md-4 col-sm-4" id="div{{ proyecto.id }}">
+			    	
+			        <div class="panel panel-info">
+			        	
+				            <div class="panel-heading">
+				                {{ proyecto.nombre_proyecto }}
+				            </div>
+				            <div class="panel-body">
+				                <p>{{ proyecto.descripcion_proyecto }}</p>
+				            </div>
+				            <div class="panel-footer">
+				                Fecha de creación: {{ proyecto.fecha_creacion }}
+				            </div>
+			            
+			            <div class="panel-body">
+
+			                <a href="/proyectos/{{ proyecto.id }}/" class="btn btn-primary"><i class="fa fa-edit "></i> Editar</a>
+			                
+			                <!-- Button delete trigger modal -->
+							<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
+							  Eliminar
+							</button>
+
+							<button class="btn btn-info"><i class="fa fa-gear "></i> Administrar</button>
+			            </div>
+			        </div>
+			        
+			    </div>
+
+		    {% empty %}
+				<div class="col-md-12 col-sm-12">
+			        <div class="alert alert-warning">
+			            No tienes proyectos aún
+			        </div>
+			    </div>
+		    {% endfor %}
+		    
+		</div>
+		<!-- /. ROW  -->
+	</div>
+	<!-- /. PAGE INNER  -->
+
+{% endblock page_wrapper %}
+
+{% block js_scripts %}
+	<script src="{% static "documentation_app/js/jquery.form.min.js" %}"></script>
+{% endblock js_scripts %}
+
+{% block custom_scripts %}
+	<script src="{% static "proyectos/js/proyecto-list-scripts.js" %}"></script>
+{% endblock custom_scripts %}
