@@ -8,3 +8,21 @@
 	color: #B5B5B5;
 	background: #2B2E33;
 }
+
+.flexible-actions
+{
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flexbox;
+	display: flex;
+
+	justify-content: space-around;
+	
+	flex-wrap: wrap;
+}
+
+.flexible-item
+{
+	margin: 0.8em;
+}

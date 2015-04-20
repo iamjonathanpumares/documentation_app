@@ -59,18 +59,33 @@
 				            </div>
 			            
 			            <div class="panel-body">
-
-			                <a href="/proyectos/{{ proyecto.id }}/" class="btn btn-primary"><i class="fa fa-edit "></i> Editar</a>
-			                
-			                <!-- Button delete trigger modal -->
-							<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
-							  Eliminar
-							</button>
-
-							<button class="btn btn-info"><i class="fa fa-gear "></i> Administrar</button>
-			            </div>
-			        </div>
+				            <div class="flexible-actions">
+				            	
+				            		
+		            			<a href="/proyectos/{{ proyecto.id }}/" class="btn btn-primary flexible-item"><i class="fa fa-edit "></i> Editar</a>
+		            			
+		            		
+		            		
+		            		
+		            			<!-- Button delete trigger modal -->
+								<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
+								  Eliminar
+								</button>
+				            			
+				            	
+		            			<button class="btn btn-info flexible-item"><i class="fa fa-book "></i> Documentación</button>
+		            			
+		            			<button class="btn btn-success flexible-item"><i class="fa fa-book "></i> Procesos</button>
+		            			
+		            			<button class="btn btn-warning flexible-item"><i class="fa fa-book "></i> Manual</button>
+				            			
+				            		
+				            	
+				            
+				        	</div>
+			        	</div>
 			        
+			    	</div>
 			    </div>
 
 		    {% empty %}

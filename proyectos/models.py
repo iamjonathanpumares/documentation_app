@@ -2,6 +2,7 @@
 from django.db import models
 
 class Proyecto(models.Model):
+	#slug = models.SlugField('Slug para las URLs de los proyectos', unique=True)
 	nombre_proyecto = models.CharField('Nombre del proyecto', max_length=50)
 	descripcion_proyecto = models.TextField('Descripción del proyecto')
 	lenguajes_utilizados = models.CharField('Lenguajes utilizados en el proyecto', max_length=80, help_text='Ejemplo: Python, Javascript, Ruby, etc.')
