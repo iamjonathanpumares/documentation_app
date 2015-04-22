@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
             name='Proyecto',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('nombre_proyecto', models.CharField(max_length=50, verbose_name=b'Nombre del proyecto')),
+                ('slug', models.SlugField(unique=True, max_length=80, verbose_name=b'Slug para las URLs de los proyectos')),
+                ('nombre_proyecto', models.CharField(max_length=80, verbose_name=b'Nombre del proyecto')),
                 ('descripcion_proyecto', models.TextField(verbose_name=b'Descripci\xc3\xb3n del proyecto')),
                 ('lenguajes_utilizados', models.CharField(help_text=b'Ejemplo: Python, Javascript, Ruby, etc.', max_length=80, verbose_name=b'Lenguajes utilizados en el proyecto')),
                 ('bases_de_datos', models.CharField(help_text=b'Ejemplo: MySQL, PostgreSQL, MongoDB, etc.', max_length=80, verbose_name=b'Bases de datos utilizadas en el proyecto')),
