@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="es">
 
 <head>
     <meta charset="utf-8" />
@@ -257,11 +257,11 @@
                         </li>
 
                         <li>
-                            <a href="/procesos/{{ proyecto.slug }}/"><i class="fa fa-list"></i> Procesos</a>
+                            <a class="active-menu" href="/procesos/{{ proyecto.slug }}/"><i class="fa fa-list"></i> Procesos</a>
                         </li>
 
                         <li>
-                            <a class="active-menu" href="/documentacion/{{ proyecto.slug }}/"><i class="fa fa-dot-circle-o"></i> Módulos<span class="fa arrow"></span></a>
+                            <a href="/documentacion/{{ proyecto.slug }}/"><i class="fa fa-dot-circle-o"></i> Módulos<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="/documentacion/{{ proyecto.slug }}/">Módulos</a>

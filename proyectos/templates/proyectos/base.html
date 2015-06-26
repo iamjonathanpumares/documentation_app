@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="es">
 
 <head>
     <meta charset="utf-8" />
@@ -246,42 +246,18 @@
             </ul>
         </nav>
         <!--/. NAV TOP  -->
+
         <nav class="navbar-default navbar-side" role="navigation">
             <div class="sidebar-collapse">
+                {% block main_menu %}
                 <ul class="nav" id="main-menu">
 
                     <li>
                         <a class="active-menu" href="/proyectos/"><i class="fa fa-list"></i> Proyectos</a>
                     </li>
 
-                    <li>
-                        <a href="#"><i class="fa fa-sitemap"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">Second Level Link</a>
-                            </li>
-                            <li>
-                                <a href="#">Second Level Link</a>
-                            </li>
-                            <li>
-                                <a href="#">Second Level Link<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-
-                                </ul>
-
-                            </li>
-                        </ul>
-                    </li>
                 </ul>
+                {% endblock main_menu %}
 
             </div>
 

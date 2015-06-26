@@ -17,6 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('nombre_actividad', models.CharField(max_length=50, verbose_name=b'Nombre de la actividad')),
+                ('tipo_actividad', models.CharField(max_length=1, verbose_name=b'Tipo de actividad', choices=[(b'E', b'Entrada'), (b'P', b'Proceso'), (b'D', b'Decisi\xc3\xb3n'), (b'S', b'Salida')])),
                 ('orden', models.PositiveSmallIntegerField()),
                 ('modulo', models.ForeignKey(related_name='actividades', blank=True, to='documentacion.Modulo', null=True)),
             ],
@@ -27,7 +28,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('nombre_proceso', models.CharField(max_length=50, verbose_name=b'Nombre del proceso')),
                 ('descripcion_proceso', models.TextField(verbose_name=b'Descripci\xc3\xb3n del proceso')),
-                ('modulos', models.ManyToManyField(related_name='modulos', to='documentacion.Modulo')),
                 ('proyecto', models.ForeignKey(related_name='procesos', to='proyectos.Proyecto')),
             ],
         ),

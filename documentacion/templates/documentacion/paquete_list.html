@@ -1,0 +1,143 @@
+{% extends 'documentacion/base.html' %}
+{% load staticfiles %}
+
+{% block elements_navbar %}
+    <button type="button" class="btn btn-primary btn-crear-proyecto" data-toggle="modal" data-target="#myModal">Agregar Paquete</button>
+    <!-- Button delete trigger modal -->
+	<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
+	  Eliminar
+	</button>
+{% endblock elements_navbar %}
+
+{% block page_wrapper %}
+
+	<div id="page-inner">
+
+		<!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Agregar Paquete</h4>
+		      </div>
+		      <div class="modal-body">
+		        <form method="post" id="formularioPaquete-js">
+		        	<div class="alert alert-danger">Hola</div>
+		      		{% csrf_token %}
+		      		<input type="hidden" name="modulo" value="{{ modulo.id }}" />
+		      		{{ form.as_p }}
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <input type="button" id="agregarButton-js" class="btn btn-info" value="Agregar">
+			    </form>
+		      </div>
+
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
+		<div class="row">
+	        <div class="col-md-12">
+	            <h1 class="page-header">
+	                Módulo ({{ modulo.nombre_modulo }}) - {{ proyecto.nombre_proyecto }} <small>(Lista de paquetes)</small>
+	            </h1>
+	        </div>
+	    </div> 
+	    <!-- /. ROW  -->
+
+		<div class="row" id="js-rowProject">
+			<div class="table-responsive">
+	            <table class="table table-striped table-bordered table-hover">
+	                <thead>
+	                    <tr>
+	                        <th>Paquete</th>
+	                        <th>Descripción</th>
+	                        <th>Tipo</th>
+	                        <th>Opción</th>
+	                    </tr>
+	                </thead>
+	                <tbody class="TableBody">
+	                	{% for paquete in object_list %}
+	                    <tr class="TableBody-row">
+	                        <td class="TableBody-data">{{ paquete.nombre_paquete }}</td>
+	                        <td class="TableBody-data">{{ paquete.descripcion_paquete }}</td>
+	                        <td class="TableBody-data">{{ paquete.tipo_paquete }}</td>
+	                        <td class="TableBody-data"><a href="/documentacion/paquetes-requeridos/{{ proyecto.slug }}/{{ paquete.id }}/" class="btn btn-primary btn-xs" title="Paquetes requeridos"><i class="fa fa-archive"></i></a></td>
+	                        
+	                    </tr>
+	                    {% endfor %}
+
+	                </tbody>
+	            </table>
+	        </div>
+		    
+		</div>
+		<!-- /. ROW  -->
+	</div>
+	<!-- /. PAGE INNER  -->
+
+{% endblock page_wrapper %}
+
+{% block js_scripts %}
+	<script src="{% static "documentation_app/js/jquery.form.min.js" %}"></script>
+{% endblock js_scripts %}
+
+{% block custom_scripts %}
+	<!-- <script src="{% static "proyectos/js/proyecto-list-scripts.js" %}"></script> -->
+	<script>
+	/*
+	function ocultarAlert()
+	{
+		$('.alert').slideToggle();
+	}
+
+	$('.alert').hide();
+	$.getJSON('/api/procesos/1', function (data) {
+		console.log(data);
+		$('#id_nombre_proceso-js').text(data.nombre_proceso);
+		$('.alert').text('Actividad agregada').slideToggle();
+		setTimeout(ocultarAlert, 3000);
+	});
+	*/
+	function ocultarAlert()
+	{
+		$('.alert-success').slideToggle();
+	}
+
+	$('#id_nombre_actividad').focus();
+	$('.alert-success').hide();
+	$('.alert-danger').hide();
+
+	$('#agregarButton-js').click(function () {
+		$.ajax({
+			url: '/api/paquetes/',
+			type: 'POST',
+			dataType: 'json',
+			data: $('#formularioPaquete-js').serialize(),
+			error: function (xhr, status, error) {
+				console.log(xhr.responseJSON.nombre_actividad[0]);
+				console.log(error);
+				$('.alert-danger').text(xhr.responseJSON.nombre_actividad[0]).slideDown();
+				$('#id_nombre_actividad').focus();
+			}
+
+		})
+		.done(function (data) {
+			var nombre_paquete = data.nombre_paquete;
+			var descripcion_paquete = data.descripcion_paquete;
+			var tipo_paquete = $('#id_tipo_paquete option:selected').text();
+			$('#myModal').modal('hide');
+			$('.TableBody').append('<tr class="TableBody-row"><td class="TableBody-data">' + nombre_paquete + '</td><td class="TableBody-data">' + descripcion_paquete + '</td><td class="TableBody-data">' + tipo_paquete + '</td><td class="TableBody-data"><button class="btn btn-primary btn-xs" title="Paquetes requeridos"><i class="fa fa-archive"></i></button></td></tr>');
+			$('.alert-success').text('Actividad agregada').slideToggle();
+			$('.alert-danger').slideUp();
+
+			$('#id_nombre_paquete').val('');
+			$('#id_tipo_paquete').val('');
+			$('#id_descripcion_paquete').text('');
+			setTimeout(ocultarAlert, 3000);
+		});
+	});
+	
+	</script>
+{% endblock custom_scripts %}

@@ -1,8 +1,8 @@
-{% extends 'proyectos/base.html' %}
+{% extends 'documentacion/base.html' %}
 {% load staticfiles %}
 
 {% block elements_navbar %}
-    <a href="/proyectos/create/" class="btn btn-success btn-crear-proyecto">Crear Proyecto</a>
+    <a href="/documentacion/{{ proyecto.slug }}/add/" class="btn btn-success btn-crear-proyecto">Crear Módulo</a>
 {% endblock elements_navbar %}
 
 {% block page_wrapper %}
@@ -18,7 +18,7 @@
 		        <h4 class="modal-title" id="myModalLabel">Eliminar Proyecto</h4>
 		      </div>
 		      <div class="modal-body">
-		        <p>Desea eliminar todo el contenido de su proyecto <span id="js-spanNameProject"></span>?</p>
+		        <p>Desea eliminar todo el contenido de su módulo <span id="js-spanNameProject"></span>?</p>
 		      </div>
 		      <div class="modal-footer">
 		      	<form method="post" id="js-frmEliminar">
@@ -36,59 +36,45 @@
 		<div class="row">
 	        <div class="col-md-12">
 	            <h1 class="page-header">
-	                Mis Proyectos <small>(Lista de proyectos)</small>
+	                Mis Módulos - {{ proyecto.nombre_proyecto }} <small>(Lista de módulos)</small>
 	            </h1>
 	        </div>
 	    </div> 
 	    <!-- /. ROW  -->
 
-	    <div class="row">
-	        <div class="col-md-12">
-	            <form action="/proyectos/buscar/"method="get">
-	            	<input type="text" name="q">
-	            	<input type="submit" value="Buscar" class="btn btn-default">
-	            </form>
-	        </div>
-	    </div> 
-	    <!-- /. ROW  -->
-
 		<div class="row" id="js-rowProject">
-			{% for proyecto in object_list %}
-			    <div class="col-md-4 col-sm-4" id="div{{ proyecto.id }}">
+			{% for modulo in object_list %}
+			    <div class="col-md-4 col-sm-4" id="div{{ modulo.id }}">
 			    	
 			        <div class="panel panel-info">
 			        	
 				            <div class="panel-heading">
-				                {{ proyecto.nombre_proyecto }}
+				                {{ modulo.nombre_modulo }}
 				            </div>
 				            <div class="panel-body">
-				                <p>{{ proyecto.descripcion_proyecto }}</p>
+				                <p>{{ modulo.descripcion_modulo }}</p>
 				            </div>
 				            <div class="panel-footer">
-				                Fecha de creación: {{ proyecto.fecha_creacion }}
+				                Opciones
 				            </div>
 			            
 			            <div class="panel-body">
 				            <div class="flexible-actions">
-				            	<a href="/documentacion/{{ proyecto.slug }}/" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Documentación</a>
-		            			
-		            			<a href="/procesos/{{ proyecto.slug }}" class="btn btn-success flexible-item"><i class="fa fa-book "></i> Procesos</a>
+				            	<a href="/documentacion/paquetes/{{ proyecto.slug }}/{{ modulo.id }}/" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Paquetes</a>
 
-		            			<button class="btn btn-warning flexible-item"><i class="fa fa-book "></i> Manual</button>
+				            	<a href="/documentacion/submodulos/{{ proyecto.slug }}/{{ modulo.id }}/" class="btn btn-warning flexible-item"><i class="fa fa-level-down "></i> Submódulos</a>
 				            		
-		            			<a href="/proyectos/update/{{ proyecto.slug }}/" class="btn btn-primary flexible-item"><i class="fa fa-edit "></i> Editar</a>
+		            			<a href="/documentacion/{{ proyecto.slug }}/{{ modulo.id }}/" class="btn btn-primary flexible-item"><i class="fa fa-edit "></i> Editar</a>
 		            			
-		            			
+		            		
 		            		
 		            		
 		            			<!-- Button delete trigger modal -->
-								<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
+								<button id="{{ modulo.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ modulo.nombre_modulo }}"><i class="fa fa-trash-o"></i>
 								  Eliminar
 								</button>
 				            			
 				            	
-		            			
-		            			
 		            			
 				            			
 				            		
@@ -103,7 +89,7 @@
 		    {% empty %}
 				<div class="col-md-12 col-sm-12">
 			        <div class="alert alert-warning">
-			            No tienes proyectos aún
+			            No tienes modulos aún
 			        </div>
 			    </div>
 		    {% endfor %}

@@ -1,0 +1,42 @@
+{% extends 'documentacion/base.html' %}
+{% load staticfiles %}
+	
+	{% block page_wrapper %}
+	<div id="page-inner">
+
+		<div class="row">
+	        <div class="col-md-12">
+	        	{% ifequal action 'create' %}
+		            <h1 class="page-header">
+		                Agregar Módulo
+		            </h1>
+	            {% endifequal %}
+
+	            {% ifequal action 'update' %}
+		            <h1 class="page-header">
+		                Actualizar Módulo
+		            </h1>
+	            {% endifequal %}
+	        </div>
+	    </div> 
+	    <!-- /. ROW  -->
+	    
+		<form action="" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			
+			{% ifequal action 'create' %}
+				<input type="submit" value="Crear" class="btn btn-success bt-lg">
+			{% endifequal %}
+
+			{% ifequal action 'update' %}
+				<input type="submit" value="Actualizar" class="btn btn-success bt-lg">
+			{% endifequal %}
+		</form>
+
+	</div>
+	{% endblock page_wrapper %}
+
+	{% block custom_scripts %}
+	<script src="{% static "procesos/js/proceso-scripts.js" %}"></script>
+    {% endblock custom_scripts %}

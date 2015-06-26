@@ -42,6 +42,9 @@ def ProyectoUpdateView(request, slug):
 class HomeTemplateView(TemplateView):
 	template_name = 'proyectos/home.html'
 
+class TestView(TemplateView):
+	template_name = 'proyectos/proyecto_template.html'
+
 class ProyectoListView(ListView):
 	model = Proyecto
 
@@ -57,6 +60,17 @@ class ProyectoListView(ListView):
 			except:
 				mensaje = { "status": "False", "action": "Eliminar" }
 				return HttpResponse(json.dumps(mensaje))
+
+def buscar_view(request):
+	if 'q' in request.GET:
+		return HttpResponse('q existe y vale: %s' % request.GET['q'])
+	else:
+		return HttpResponse('q no existe')
+	if request.method == 'GET':
+		if request.GET['q']:
+			return HttpResponse('q existe y vale: %s' % request.GET['q'])
+		else:
+			return HttpResponse('q no existe')
 
 class ProyectoDetailView(UpdateView):
 	model = Proyecto

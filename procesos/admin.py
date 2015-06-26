@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Proceso, Actividad
 
-# Register your models here.
+admin.site.register(Proceso)
+admin.site.register(Actividad)
+

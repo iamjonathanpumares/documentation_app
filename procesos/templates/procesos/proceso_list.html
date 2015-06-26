@@ -1,8 +1,8 @@
-{% extends 'proyectos/base.html' %}
+{% extends 'procesos/base.html' %}
 {% load staticfiles %}
 
 {% block elements_navbar %}
-    <a href="/proyectos/create/" class="btn btn-success btn-crear-proyecto">Crear Proyecto</a>
+    <a href="/procesos/{{ proyecto.slug }}/add/" class="btn btn-success btn-crear-proyecto">Agregar Proceso</a>
 {% endblock elements_navbar %}
 
 {% block page_wrapper %}
@@ -36,60 +36,46 @@
 		<div class="row">
 	        <div class="col-md-12">
 	            <h1 class="page-header">
-	                Mis Proyectos <small>(Lista de proyectos)</small>
+	                Mis Procesos - {{ proyecto }} <small>(Lista de procesos)</small>
 	            </h1>
 	        </div>
 	    </div> 
 	    <!-- /. ROW  -->
 
-	    <div class="row">
-	        <div class="col-md-12">
-	            <form action="/proyectos/buscar/"method="get">
-	            	<input type="text" name="q">
-	            	<input type="submit" value="Buscar" class="btn btn-default">
-	            </form>
-	        </div>
-	    </div> 
-	    <!-- /. ROW  -->
+	    
 
 		<div class="row" id="js-rowProject">
-			{% for proyecto in object_list %}
-			    <div class="col-md-4 col-sm-4" id="div{{ proyecto.id }}">
+			{% for proceso in object_list %}
+			    <div class="col-md-4 col-sm-4" id="div{{ proceso.id }}">
 			    	
 			        <div class="panel panel-info">
 			        	
 				            <div class="panel-heading">
-				                {{ proyecto.nombre_proyecto }}
+				                {{ proceso.nombre_proceso }}
 				            </div>
 				            <div class="panel-body">
-				                <p>{{ proyecto.descripcion_proyecto }}</p>
+				                <p>{{ proceso.descripcion_proceso }}</p>
 				            </div>
 				            <div class="panel-footer">
-				                Fecha de creación: {{ proyecto.fecha_creacion }}
+				                Opciones
 				            </div>
 			            
 			            <div class="panel-body">
 				            <div class="flexible-actions">
-				            	<a href="/documentacion/{{ proyecto.slug }}/" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Documentación</a>
-		            			
-		            			<a href="/procesos/{{ proyecto.slug }}" class="btn btn-success flexible-item"><i class="fa fa-book "></i> Procesos</a>
-
-		            			<button class="btn btn-warning flexible-item"><i class="fa fa-book "></i> Manual</button>
+				            	
 				            		
-		            			<a href="/proyectos/update/{{ proyecto.slug }}/" class="btn btn-primary flexible-item"><i class="fa fa-edit "></i> Editar</a>
+		            			<a href="/procesos/{{ proyecto.slug }}/{{ proceso.id }}" class="btn btn-primary flexible-item"><i class="fa fa-edit "></i> Editar</a>
 		            			
-		            			
+		            		
 		            		
 		            		
 		            			<!-- Button delete trigger modal -->
-								<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
+								<button id="{{ proceso.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proceso.nombre_proyecto }}"><i class="fa fa-pencil"></i>
 								  Eliminar
 								</button>
+
+								<a href="/procesos/actividades/{{ proceso.id }}/" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Actividades</a>
 				            			
-				            	
-		            			
-		            			
-		            			
 				            			
 				            		
 				            	
@@ -103,7 +89,7 @@
 		    {% empty %}
 				<div class="col-md-12 col-sm-12">
 			        <div class="alert alert-warning">
-			            No tienes proyectos aún
+			            No tienes procesos aún
 			        </div>
 			    </div>
 		    {% endfor %}
