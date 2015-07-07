@@ -1,6 +1,9 @@
 from django.contrib import admin
 from .models import Modulo, TipoPaquete, Paquete
 
-admin.site.register(Modulo)
+class ModuloAdmin(admin.ModelAdmin):
+	filter_horizontal = ('modulos_depende',)
+
+admin.site.register(Modulo, ModuloAdmin)
 admin.site.register(TipoPaquete)
 admin.site.register(Paquete)

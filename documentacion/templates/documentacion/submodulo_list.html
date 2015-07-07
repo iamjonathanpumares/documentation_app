@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block elements_navbar %}
-    <a href="/documentacion/submodulos/{{ proyecto.slug }}/{{ modulo_depende.id }}/add/" class="btn btn-success btn-crear-proyecto">Crear submódulo de {{ modulo_depende.nombre_modulo }}</a>
+    <a href="/documentacion/submodulos/{{ proyecto.slug }}/{{ modulo_padre.id }}/add/" class="btn btn-success btn-crear-proyecto">Crear submódulo de {{ modulo_padre.nombre_modulo }}</a>
 {% endblock elements_navbar %}
 
 {% block page_wrapper %}
@@ -39,9 +39,18 @@
 	                Mis Módulos - {{ proyecto.nombre_proyecto }} <small>(Lista de submódulos)</small>
 	            </h1>
 	            <ol class="breadcrumb">
-                  <li><a href="#">{{ modulo_depende }}</a></li>
-                  <li><a href="#">Library</a></li>
-                  <li class="active">Data</li>
+	            	{% for modulo_depende in modulos_depende %}
+	            		{% ifequal modulo_depende.nivel 1 %}
+	            			<li><a href="/documentacion/{{ proyecto.slug }}/">{{ modulo_depende }}</a></li>
+	            		{% else %}
+	            			<li><a href="/documentacion/submodulos/{{ proyecto.slug }}/{{ modulo_depende.id }}/">{{ modulo_depende }}</a></li>
+	            		{% endifequal %} 
+	            	{% endfor %}
+	            	{% ifequal modulo_padre.nivel 1 %}
+            			<li><a href="/documentacion/{{ proyecto.slug }}/">{{ modulo_padre }}</a></li>
+            		{% else %}
+            			<li class="active">{{ modulo_padre }}</li>
+            		{% endifequal %}
                 </ol>
 	        </div>
 	    </div> 

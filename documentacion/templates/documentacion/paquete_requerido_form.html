@@ -47,26 +47,16 @@
 	    <!-- /. ROW  -->
 
 		<div class="row" id="js-rowProject">
-			<form>
-				<select name="modulo" id="id_modulo">
-					{% for modulo in modulos %}
-					<option value="{{ modulo.id }}">{{ modulo }}</option>
-					{% endfor %}
-				</select>
-			</form>
-		    
-		</div>
-		<!-- /. ROW  -->
-
-		<div class="row" id="js-rowProject">
 			<ul>
 				{% for modulo in modulos %}
-				<li>{{ modulo }}</li>
-					{% if modulo.submodulos %}
+				<li>{{ modulo.modulo }}</li>
 					<ul>
-						<li>Si hay módulos</li>
+					{% for submodulo in modulo.submodulos %}
+						
+						<li>{{ submodulo }}</li>
+						
+					{% endfor %}
 					</ul>
-					{% endif %}
 				{% endfor %}
 			</ul>
 		    
