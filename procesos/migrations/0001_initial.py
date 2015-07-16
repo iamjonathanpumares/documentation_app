@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Actividad',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('nombre_actividad', models.CharField(max_length=50, verbose_name=b'Nombre de la actividad')),
+                ('nombre_actividad', models.CharField(max_length=150, verbose_name=b'Nombre de la actividad')),
                 ('tipo_actividad', models.CharField(max_length=1, verbose_name=b'Tipo de actividad', choices=[(b'E', b'Entrada'), (b'P', b'Proceso'), (b'D', b'Decisi\xc3\xb3n'), (b'S', b'Salida')])),
                 ('orden', models.PositiveSmallIntegerField()),
                 ('modulo', models.ForeignKey(related_name='actividades', blank=True, to='documentacion.Modulo', null=True)),

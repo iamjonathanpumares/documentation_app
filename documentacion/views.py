@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import json
+
+from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.http import HttpResponse
 from django.views.generic import ListView
+
 from .models import Modulo, Paquete
 from .forms import ModuloForm, PaqueteForm
 from proyectos.models import Proyecto
@@ -12,7 +15,7 @@ class ModuloListView(ListView):
 
 	def get_queryset(self):
 		slug = self.kwargs['slug']
-		queryset = Modulo.objects.filter(proyecto__slug=slug, modulos_depende=None)
+		queryset = Modulo.objects.filter(proyecto__slug=slug, modulo_depende=None)
 		return queryset
 
 	def get_context_data(self, **kwargs):
@@ -41,7 +44,7 @@ class SubmoduloListView(ListView):
 	def get_queryset(self):
 		slug = self.kwargs['slug']
 		id = self.kwargs['id']
-		queryset = Modulo.objects.filter(proyecto__slug=slug, modulos_depende__id=id)
+		queryset = Modulo.objects.filter(proyecto__slug=slug, modulo_depende__id=id)
 		return queryset
 
 	def get_context_data(self, **kwargs):
@@ -51,7 +54,7 @@ class SubmoduloListView(ListView):
 	    context['proyecto'] = get_object_or_404(Proyecto, slug=slug)
 	    modulo_padre = get_object_or_404(Modulo, id=id)
 	    context['modulo_padre'] = modulo_padre
-	    context['modulos_depende'] = modulo_padre.modulos_depende.all().order_by('nivel')
+	    #context['modulo_depende'] = modulo_padre.modulos_depende.all().order_by('nivel')
 	    return context
 
 class PaqueteListView(ListView):
@@ -85,19 +88,54 @@ class PaqueteListView(ListView):
 def PaqueteRequeridoView(request, slug, id):
 	proyecto_instance = Proyecto.objects.get(slug=slug)
 	paquete_instance = Paquete.objects.get(pk=id)
-	modulos = Modulo.objects.filter(proyecto__slug=slug, modulos_depende=None)
 
-	modulos_list = []
-	for modulo in modulos:
-		modulo_dict = { 'modulo': modulo, 'submodulos': modulo.submodulos.all().order_by('nivel') }
-		modulos_list.append(modulo_dict)
+	if request.method == 'POST':
+		if 'tipo_paquete_radio' in request.POST and 'tipo_agregar_paquete_radio' in request.POST:
+			tipo_paquete_radio = request.POST['tipo_paquete_radio']
+			tipo_agregar_paquete_radio = request.POST['tipo_agregar_paquete_radio']
+
+			if tipo_agregar_paquete_radio == 'existente':
+				paquete_requerido_id = request.POST['paquete']
+
+				paquete_requerido_instance = Paquete.objects.get(pk=paquete_requerido_id)
+
+				paquete_instance.paquetes_requeridos.add(paquete_requerido_instance)
+
+					
+
+			if tipo_agregar_paquete_radio == 'nuevo':
+
+				form = PaqueteForm(request.POST)
+				if form.is_valid():
+					paquete = form.save(commit=False)
+					paquete.proyecto = proyecto_instance
+					if tipo_paquete_radio == 'si':
+						ubicacion_paquete_radio = request.POST['ubicacion_paquete_radio']	
+
+						if ubicacion_paquete_radio == 'modulo_principal':
+							modulo_id = request.POST['modulo_principal']
+						elif ubicacion_paquete_radio == 'submodulo':
+							modulo_id = request.POST['submodulos_totales']
+
+						modulo_instance = Modulo.objects.get(pk=modulo_id)
+						
+						paquete.modulo = modulo_instance
+						paquete.path = '%s/%s' % (modulo_instance.path, paquete.nombre_paquete)
+						
+					paquete.save()
+					paquete_instance.paquetes_requeridos.add(paquete)
+
+			if 'save' in request.POST:
+				return redirect(reverse('paquetes-modulo', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.modulo.id }))
+			elif 'add_another' in request.POST:
+				return redirect(reverse('paquetes-requeridos', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.id }))
+	
+	else:
+		form = PaqueteForm()
 
 
-	return render(request, 'documentacion/paquete_requerido_form.html', { 'modulos': modulos_list })
+	return render(request, 'documentacion/paquete_requerido_form.html', { 'proyecto': proyecto_instance, 'form': form })
 
-# 1. Guardar el módulo padre en el campo modulos_depende
-# 2. Guardar los módulos de los que depende su padre por medio de un for
-# 3. Checar el nivel que tiene su padre y ponerle uno más
 def ModuloCreateView(request, slug, id=None):
 	proyecto_instance = get_object_or_404(Proyecto, slug=slug)
 	if request.method == 'POST':
@@ -108,12 +146,17 @@ def ModuloCreateView(request, slug, id=None):
 			if id:	
 				modulo_padre_instance = get_object_or_404(Modulo, id=id)
 				modulo.nivel = modulo_padre_instance.nivel + 1
+				modulo.path = '%s/%s' % (modulo_padre_instance.path, modulo.nombre_modulo)
+				modulo.modulo_depende = modulo_padre_instance
+
+				ruta = modulo.path.split('/')
+				modulo_principal_instance = Modulo.objects.get(proyecto__slug=ruta[0], nombre_modulo=ruta[1], modulo_depende=None)
+				modulo.modulo_principal = modulo_principal_instance
+				
 				modulo.save()
-				modulo.modulos_depende.add(modulo_padre_instance)
-				for modulo_depende_padre in modulo_padre_instance.modulos_depende.all():
-					modulo.modulos_depende.add(modulo_depende_padre)
 				return redirect('/documentacion/submodulos/%s/%s/' % (proyecto_instance.slug, id))
 			modulo.nivel = 1
+			modulo.path = '%s/%s' % (proyecto_instance.slug, modulo.nombre_modulo)
 			modulo.save()
 			return redirect('/documentacion/%s/' % proyecto_instance.slug)
 	else:

@@ -25,6 +25,7 @@
 		        <form method="post" id="formularioPaquete-js">
 		        	<div class="alert alert-danger">Hola</div>
 		      		{% csrf_token %}
+		      		<input type="hidden" name="proyecto" value="{{ proyecto.id }}" />
 		      		<input type="hidden" name="modulo" value="{{ modulo.id }}" />
 		      		{{ form.as_p }}
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

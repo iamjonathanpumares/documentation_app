@@ -13,30 +13,6 @@
 
 	<div id="page-inner">
 
-		<!-- Modal -->
-		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		        <h4 class="modal-title" id="myModalLabel">Agregar Paquete</h4>
-		      </div>
-		      <div class="modal-body">
-		        <form method="post" id="formularioPaquete-js">
-		        	<div class="alert alert-danger">Hola</div>
-		      		{% csrf_token %}
-		      		<input type="hidden" name="modulo" value="{{ modulo.id }}" />
-		      		{{ form.as_p }}
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			        <input type="button" id="agregarButton-js" class="btn btn-info" value="Agregar">
-			    </form>
-		      </div>
-
-		    </div>
-		  </div>
-		</div>
-		<!-- ./Modal -->
-
 		<div class="row">
 	        <div class="col-md-12">
 	            <h1 class="page-header">
@@ -46,22 +22,91 @@
 	    </div> 
 	    <!-- /. ROW  -->
 
-		<div class="row" id="js-rowProject">
-			<ul>
-				{% for modulo in modulos %}
-				<li>{{ modulo.modulo }}</li>
-					<ul>
-					{% for submodulo in modulo.submodulos %}
-						
-						<li>{{ submodulo }}</li>
-						
-					{% endfor %}
-					</ul>
-				{% endfor %}
-			</ul>
-		    
-		</div>
-		<!-- /. ROW  -->
+		<form method="post" id="formularioPaquete-js">
+        	<div class="alert alert-danger">Hola</div>
+      		{% csrf_token %}
+      		<input type="hidden" name="proyecto" id="id_proyecto" value="{{ proyecto.slug }}" />
+      		<input type="hidden" name="modulo" value="{{ modulo.id }}" />
+      		<div class="form-group">
+                <label>¿Su paquete depende de un módulo?</label>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="tipo_paquete_radio" id="id_tipo_paquete_radio1" value="si">Si
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="tipo_paquete_radio" id="id_tipo_paquete_radio2" value="no">No
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" id="id_tipo_agregar_paquete_group">
+                <label>¿Agregará un paquete ya existente o crear uno nuevo?</label>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="tipo_agregar_paquete_radio" id="id_tipo_agregar_paquete_radio1" value="existente">Agregar paquete existente
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="tipo_agregar_paquete_radio" id="id_tipo_agregar_paquete_radio2" value="nuevo">Crear uno nuevo
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" id="id_ubicacion_paquete_group">
+                <label>¿Donde se ubica el paquete?</label>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="ubicacion_paquete_radio" id="id_ubicacion_paquete_radio1" value="modulo_principal">En un módulo principal
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="ubicacion_paquete_radio" id="id_ubicacion_paquete_radio2" value="submodulo">En un submódulo
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" id="id_select_group_modulo_principal">
+                <label>Seleccione el módulo principal: </label>
+                <select class="form-control" name="modulo_principal" id="id_modulo_principal">
+                	<option value="">---------</option>  
+                </select>
+            </div>
+
+            <div class="form-group" id="id_select_group_submodulos_totales">
+                <label>Seleccione el submódulo: </label>
+                <select class="form-control" name="submodulos_totales" id="id_submodulos_totales">
+                	<option value="">---------</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="id_select_group_tipos_paquetes">
+                <label>Seleccione el tipo de paquete: </label>
+                <select class="form-control" name="select_tipo_paquete" id="id_select_tipo_paquete">
+                	<option value="">---------</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="id_select_group_paquetes_modulo">
+                <label>Seleccione el paquete: </label>
+                <select class="form-control" name="paquete" id="id_paquete">
+                	<option value="">---------</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="id_formulario_agregar_paquete">
+      			{{ form.as_p }}
+      		</div>
+
+      		<div class="form-group" id="id_input_button_group">
+		        <input type="submit" name="add_another" id="agregarButton-js" class="btn btn-danger" value="Guardar y agregar otro">
+		        <input type="submit" name="save" id="agregarButton-js" class="btn btn-info" value="Guardar">
+      		</div>
+	        
+	    </form>
 	</div>
 	<!-- /. PAGE INNER  -->
 
@@ -74,20 +119,18 @@
 {% block custom_scripts %}
 	<!-- <script src="{% static "proyectos/js/proyecto-list-scripts.js" %}"></script> -->
 	<script>
-	/*
-	function ocultarAlert()
-	{
-		$('.alert').slideToggle();
-	}
+	/****************************************************************
+	* Declaración de elementos del DOM                              *
+	*****************************************************************/
+	var $id_div_radio_tipo_agregar_paquete = $('#id_tipo_agregar_paquete_group');
+	var $id_div_radio_ubicacion_paquete = $('#id_ubicacion_paquete_group');
+	var $id_div_form_agregar_paquete = $('#id_formulario_agregar_paquete');
+	var $id_div_select_modulo_principal = $('#id_select_group_modulo_principal');
+	var $id_div_select_submodulos_totales = $('#id_select_group_submodulos_totales');
+	var $id_div_select_tipos_paquetes = $('#id_select_group_tipos_paquetes');
+	var $id_div_select_paquetes_modulo = $('#id_select_group_paquetes_modulo');
+	var $id_div_input_button = $('#id_input_button_group');
 
-	$('.alert').hide();
-	$.getJSON('/api/procesos/1', function (data) {
-		console.log(data);
-		$('#id_nombre_proceso-js').text(data.nombre_proceso);
-		$('.alert').text('Actividad agregada').slideToggle();
-		setTimeout(ocultarAlert, 3000);
-	});
-	*/
 	function ocultarAlert()
 	{
 		$('.alert-success').slideToggle();
@@ -126,6 +169,395 @@
 			setTimeout(ocultarAlert, 3000);
 		});
 	});
+
+	// Al cargar el DOM se ocultan estos elementos	
+	$id_div_radio_tipo_agregar_paquete.css('display', 'none');
+	$id_div_radio_ubicacion_paquete.css('display', 'none');
+	$id_div_form_agregar_paquete.css('display', 'none');
+	$id_div_select_modulo_principal.css('display', 'none');
+	$id_div_select_submodulos_totales.css('display', 'none');
+	$id_div_select_tipos_paquetes.css('display', 'none');
+	$id_div_select_paquetes_modulo.css('display', 'none');
+	$id_div_input_button.css('display', 'none');
+
+	/***********************************************************************
+	*	Eventos de los elementos del DOM								   *
+	************************************************************************/
+
+	// Evento onChange del radio button tipo_paquete_radio
+	$("input[name='tipo_paquete_radio']").change(function () {
+		$id_div_radio_ubicacion_paquete.css('display', 'none');
+		$id_div_form_agregar_paquete.css('display', 'none');
+		$id_div_select_modulo_principal.css('display', 'none');
+		$id_div_select_submodulos_totales.css('display', 'none');
+		$id_div_select_tipos_paquetes.css('display', 'none');
+		$id_div_select_paquetes_modulo.css('display', 'none');
+		$id_div_input_button.css('display', 'none');
+
+		$('input[name="tipo_agregar_paquete_radio"]').attr('checked', false);
+
+		$id_div_radio_tipo_agregar_paquete.css('display', 'block');
+	});
+
+	// Evento onChange del radio button tipo_agregar_paquete_radio
+	$("input[name='tipo_agregar_paquete_radio']").change(function () {
+		var valor_radio = $(this).val();
+		var val_rbtn_tipo_paquete = $("input[name='tipo_paquete_radio']:checked").val();
+
+		$('input[name="ubicacion_paquete_radio"]').attr('checked', false);
+
+		$id_div_form_agregar_paquete.css('display', 'none');
+		$id_div_select_modulo_principal.css('display', 'none');
+		$id_div_select_submodulos_totales.css('display', 'none');
+		$id_div_select_tipos_paquetes.css('display', 'none');
+		$id_div_select_paquetes_modulo.css('display', 'none');
+		$id_div_input_button.css('display', 'none');
+
+		if (val_rbtn_tipo_paquete == "si" && valor_radio == "existente")	
+		{
+
+			$id_div_radio_ubicacion_paquete.children('label').text('¿Donde se ubica el paquete?');
+			$id_div_radio_ubicacion_paquete.css('display', 'block');
+
+			/*$id_div_select_modulo_principal.children('label').text('Seleccione el módulo principal:');
+			$id_div_select_modulo_principal.css('display', 'block');*/
+
+			/*if ($("input[name='tipo_paquete_radio']:checked").val() == "si")
+			{
+				$id_div_form_agregar_paquete.css('display', 'none');
+				$id_div_select_modulo_principal.children('label').text('Seleccione el módulo principal:');
+				ajaxModulosPrincipales();
+			}*/
+		}
+		else if (val_rbtn_tipo_paquete == "si" && valor_radio == "nuevo")
+		{
+			$id_div_radio_ubicacion_paquete.children('label').text('¿Donde guardará el nuevo paquete?');
+			$id_div_radio_ubicacion_paquete.css('display', 'block');
+
+			/*$id_div_select_modulo_principal.children('label').text('Ubicación del nuevo paquete (Módulo principal):');
+			$id_div_select_modulo_principal.css('display', 'block');
+			
+			ajaxModulosPrincipales();
+			$id_div_select_submodulos_totales.css('display', 'none');
+			$id_div_select_paquetes_modulo.css('display', 'none');
+			$id_div_input_button.css('display', 'none');
+			$id_div_form_agregar_paquete.css('display', 'block');
+			$('#id_nombre_paquete').focus();*/
+
+			
+			
+		}
+		else if (val_rbtn_tipo_paquete == "no" && valor_radio == "existente")	
+		{
+
+			ajaxTiposPaquetes();
+
+			/*$id_div_select_modulo_principal.children('label').text('Seleccione el módulo principal:');
+			$id_div_select_modulo_principal.css('display', 'block');*/
+
+			/*if ($("input[name='tipo_paquete_radio']:checked").val() == "si")
+			{
+				$id_div_form_agregar_paquete.css('display', 'none');
+				$id_div_select_modulo_principal.children('label').text('Seleccione el módulo principal:');
+				ajaxModulosPrincipales();
+			}*/
+		}
+		else if (val_rbtn_tipo_paquete == "no" && valor_radio == "nuevo")
+		{
+			$id_div_form_agregar_paquete.css('display', 'block');
+			$id_div_input_button.css('display', 'block');
+			
+		}
+		$id_div_radio_tipo_agregar_paquete.css('display', 'block');
+
+	});
+
+	// Evento onChange del radio button tipo_paquete_radio
+	$("input[name='ubicacion_paquete_radio']").change(function () {
+		var valor_radio = $(this).val();
+		var val_rbtn_tipo_paquete = $("input[name='tipo_paquete_radio']:checked").val();
+		var val_rbtn_tipo_agregar = $("input[name='tipo_agregar_paquete_radio']:checked").val();
+
+		$id_div_select_submodulos_totales.css('display', 'none');
+		$id_div_select_paquetes_modulo.css('display', 'none');
+		$id_div_input_button.css('display', 'none');
+
+		
+	
+		//$id_div_radio_ubicacion_paquete.children('label').text('¿Donde se ubica el paquete?');
+
+		$id_div_select_modulo_principal.children('label').text('Seleccione el módulo principal:');
+		$id_div_select_modulo_principal.css('display', 'block');
+
+		ajaxModulosPrincipales();
+
+		/*if ($("input[name='tipo_paquete_radio']:checked").val() == "si")
+		{
+			$id_div_form_agregar_paquete.css('display', 'none');
+			$id_div_select_modulo_principal.children('label').text('Seleccione el módulo principal:');
+			ajaxModulosPrincipales();
+		}*/
+		
+
+
+
+
+
+
+		//$id_div_radio_tipo_agregar_paquete.css('display', 'block');
+	});
+
+	// Evento onChange del select modulo_principal
+	$('select[name="modulo_principal"]').change(function () {
+		var valor_option = $(this).val();
+		var val_rbtn_tipo_agregar = $("input[name='tipo_agregar_paquete_radio']:checked").val();
+		var val_rbtn_ubicacion_paquete = $('input[name="ubicacion_paquete_radio"]:checked').val();
+
+		if (val_rbtn_tipo_agregar == "existente" && val_rbtn_ubicacion_paquete == "modulo_principal" && valor_option != "")
+		{
+			ajaxPaquetesModulo(valor_option);
+		}
+		else if (val_rbtn_ubicacion_paquete == "submodulo")
+		{
+			ajaxSubmodulosTotales(valor_option);
+		}
+
+		if (val_rbtn_tipo_agregar == "nuevo" && val_rbtn_ubicacion_paquete == "modulo_principal" && valor_option != "")
+		{
+			$id_div_form_agregar_paquete.css('display', 'block');
+			$id_div_input_button.css('display', 'block');
+
+		}
+
+		if (val_rbtn_tipo_agregar == "existente" && valor_option == "")
+		{
+			$id_div_select_submodulos_totales.css('display', 'none');
+			$id_div_select_paquetes_modulo.css('display', 'none');
+			$id_div_form_agregar_paquete.css('display', 'none');
+			$id_div_input_button.css('display', 'none');
+		}
+		else if (val_rbtn_tipo_agregar == "nuevo" && valor_option == "")
+		{
+			$id_div_select_submodulos_totales.css('display', 'none');
+			$id_div_select_paquetes_modulo.css('display', 'none');
+			$id_div_input_button.css('display', 'none');
+		}
+		
+	});
+
+	// Evento onChange del select submodulos_totales
+	$('select[name="submodulos_totales"]').change(function () {
+		var valor_option = $(this).val();
+		var val_rbtn_ubicacion_paquete = $('input[name="ubicacion_paquete_radio"]:checked').val();
+
+		if ($("input[name='tipo_agregar_paquete_radio']:checked").val() == "existente" && valor_option != "")
+		{
+			ajaxPaquetesModulo(valor_option);
+		}
+		else if ($("input[name='tipo_agregar_paquete_radio']:checked").val() == "nuevo" && val_rbtn_ubicacion_paquete == "submodulo" && $('select[name="submodulos_totales"] option:selected').val() != "")
+		{
+			$id_div_form_agregar_paquete.css('display', 'block');
+			$id_div_input_button.css('display', 'block');
+		}
+		else if (valor_option == "")
+		{
+			$id_div_select_paquetes_modulo.css('display', 'none');
+			$id_div_input_button.css('display', 'none');
+		}
+
+		
+		
+	});
+
+	// Evento onChange del select tipo_paquete
+	$('select[name="select_tipo_paquete"]').change(function () {
+		var valor_option = $(this).val();
+		var val_rbtn_tipo_paquete = $("input[name='tipo_paquete_radio']:checked").val();
+
+		if (($("input[name='tipo_agregar_paquete_radio']:checked").val() == "existente") && (val_rbtn_tipo_paquete == "no") && ($('select[name="select_tipo_paquete"] option:selected').val() != ""))
+		{
+			ajaxPaquetesIndependientes(valor_option);
+		}
+		else if (valor_option == "")
+		{
+			$id_div_select_paquetes_modulo.css('display', 'none');
+			$id_div_input_button.css('display', 'none');
+		}	
+		
+	});
+
+	// Evento onChange del select paquete
+	$('select[name="paquete"]').change(function () {
+		var valor_option = $(this).val();
+		//var val_rbtn_tipo_paquete = $("input[name='tipo_paquete_radio']:checked").val();
+
+		if (($("input[name='tipo_agregar_paquete_radio']:checked").val() == "existente") && ($('select[name="paquete"] option:selected').val() != ""))
+		{
+			$id_div_input_button.css('display', 'block');
+		}
+		else if (valor_option == "")
+		{
+			$id_div_input_button.css('display', 'none');
+		}	
+		
+	});
+
+	/***********************************************************************
+	*	Declaración de funciones											*
+	************************************************************************/
+	function ajaxModulosPrincipales()
+	{
+		$.ajax({
+			url: '/api/modulos-principales/' + $('#id_proyecto').val() + '/',
+			type: 'GET',
+			dataType: 'json',
+			error: function (xhr, status, error) {
+				console.log(xhr.responseJSON.nombre_actividad[0]);
+				console.log(error);
+				$('.alert-danger').text(xhr.responseJSON.nombre_actividad[0]).slideDown();
+				$('#id_nombre_actividad').focus();
+			}
+
+		})
+		.done(function (data) {
+			// data devuelve un arreglo de objetos y queremos saber cuantos elementos devolvio
+			var no_elementos = data.length;
+			$('#id_modulo_principal').empty();
+			$('#id_modulo_principal').append('<option value="">---------</option');
+
+			for (var i = 0; i < no_elementos; i++)
+			{
+				$('#id_modulo_principal').append('<option value="' + data[i].id + '">' + data[i].nombre_modulo + '</option');
+			}
+
+			$id_div_select_modulo_principal.css('display', 'block');
+			
+		});
+	}
+
+	function ajaxSubmodulosTotales(id)
+	{
+		$.ajax({
+			url: '/api/submodulos-totales/' + id + '/',
+			type: 'GET',
+			dataType: 'json',
+			error: function (xhr, status, error) {
+				console.log(xhr.responseJSON.nombre_actividad[0]);
+				console.log(error);
+				$('.alert-danger').text(xhr.responseJSON.nombre_actividad[0]).slideDown();
+				$('#id_nombre_actividad').focus();
+			}
+
+		})
+		.done(function (data) {
+			console.log(data);
+			var no_elementos = data.submodulos_totales.length;
+			$('#id_submodulos_totales').empty();
+			$('#id_submodulos_totales').append('<option value="">---------</option');
+
+			for (var i = 0; i < no_elementos; i++)
+			{
+				$('#id_submodulos_totales').append('<option value="' + data.submodulos_totales[i].id + '">' + data.submodulos_totales[i].path + '</option');
+			}
+
+			$id_div_select_submodulos_totales.css('display', 'block');
+			
+		});
+	}
+
+	function ajaxPaquetesModulo(id)
+	{
+		$.ajax({
+			url: '/api/paquetes/modulo/' + id + '/',
+			type: 'GET',
+			dataType: 'json',
+			error: function (xhr, status, error) {
+				console.log(xhr.responseJSON.nombre_actividad[0]);
+				console.log(error);
+				$('.alert-danger').text(xhr.responseJSON.nombre_actividad[0]).slideDown();
+				$('#id_nombre_actividad').focus();
+			}
+
+		})
+		.done(function (data) {
+			console.log(data);
+			var no_elementos = data.paquetes.length;
+			$('#id_paquete').empty();
+			$('#id_paquete').append('<option value="">---------</option');
+
+			for (var i = 0; i < no_elementos; i++)
+			{
+				$('#id_paquete').append('<option value="' + data.paquetes[i].id + '">' + data.paquetes[i].nombre_paquete + '</option');
+			}
+
+			$id_div_select_paquetes_modulo.css('display', 'block');
+			
+		});
+	}
+
+	function ajaxPaquetesIndependientes(clave_paquete)
+	{
+		var slug = $('#id_proyecto').val();
+
+		$.ajax({
+			url: '/api/paquetes-independientes/' + slug + '/' + clave_paquete + '/',
+			type: 'GET',
+			dataType: 'json',
+			error: function (xhr, status, error) {
+				console.log(xhr.responseJSON.nombre_actividad[0]);
+				console.log(error);
+				$('.alert-danger').text(xhr.responseJSON.nombre_actividad[0]).slideDown();
+				$('#id_nombre_actividad').focus();
+			}
+
+		})
+		.done(function (data) {
+			console.log(data);
+			var no_elementos = data.length;
+			$('#id_paquete').empty();
+			$('#id_paquete').append('<option value="">---------</option');
+
+			for (var i = 0; i < no_elementos; i++)
+			{
+				$('#id_paquete').append('<option value="' + data[i].id + '">' + data[i].nombre_paquete + '</option');
+			}
+
+			$id_div_select_paquetes_modulo.css('display', 'block');
+			
+		});
+	}
+
+	function ajaxTiposPaquetes()
+	{
+		var slug = $('#id_proyecto').val();
+
+		$.ajax({
+			url: '/api/tipos-paquetes/' + slug + '/',
+			type: 'GET',
+			dataType: 'json',
+			error: function (xhr, status, error) {
+				console.log(xhr.responseJSON.nombre_actividad[0]);
+				console.log(error);
+				$('.alert-danger').text(xhr.responseJSON.nombre_actividad[0]).slideDown();
+				$('#id_nombre_actividad').focus();
+			}
+
+		})
+		.done(function (data) {
+			console.log(data);
+			var no_elementos = data.length;
+			$('#id_select_tipo_paquete').empty();
+			$('#id_select_tipo_paquete').append('<option value="">---------</option');
+
+			for (var i = 0; i < no_elementos; i++)
+			{
+				$('#id_select_tipo_paquete').append('<option value="' + data[i].clave_paquete + '">' + data[i].tipo_paquete + '</option');
+			}
+
+			$id_div_select_tipos_paquetes.css('display', 'block');
+			
+		});
+	}
 	
 	</script>
 {% endblock custom_scripts %}

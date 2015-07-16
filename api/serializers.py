@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from proyectos.models import Proyecto
 from procesos.models import Proceso, Actividad
-from documentacion.models import Paquete, TipoPaquete
+from documentacion.models import Paquete, TipoPaquete, Modulo
 
 class ProyectoSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -21,10 +21,38 @@ class ProcesoSerializer(serializers.ModelSerializer):
 
 class TipoPaqueteSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = Paquete
+		model = TipoPaquete
 		fields = ('clave_paquete', 'tipo_paquete',)
 
-class PaqueteSerializer(serializers.ModelSerializer):
+class PaqueteRequeridoSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Paquete
-		fields = ('modulo', 'tipo_paquete', 'nombre_paquete', 'descripcion_paquete',)
+		fields = ('paquetes_requeridos',)
+
+class PaqueteSerializer(serializers.ModelSerializer):
+	tipo_paquete = TipoPaqueteSerializer()
+
+	class Meta:
+		model = Paquete
+		fields = ('id', 'proyecto', 'modulo', 'tipo_paquete', 'nombre_paquete', 'descripcion_paquete',)
+
+class ModuloDetailSerializer(serializers.ModelSerializer):
+	paquetes = PaqueteSerializer(many=True, read_only=True)
+
+	class Meta:
+		model = Modulo
+		fields = ('id', 'nombre_modulo', 'descripcion_modulo', 'nivel', 'path', 'paquetes',)
+
+# ----------------------------------------------------------------------------------
+class ModuloSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Modulo
+		fields = ('id', 'nombre_modulo', 'descripcion_modulo', 'nivel', 'path',)
+
+class SubmoduloTotalesSerializer(serializers.ModelSerializer):
+	submodulos_totales = ModuloSerializer(many=True, read_only=True)
+
+	class Meta:
+		model = Modulo
+		fields = ('nombre_modulo', 'submodulos_totales',)
