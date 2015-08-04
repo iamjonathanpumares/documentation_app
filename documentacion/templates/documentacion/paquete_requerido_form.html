@@ -15,98 +15,105 @@
 
 		<div class="row">
 	        <div class="col-md-12">
-	            <h1 class="page-header">
-	                Módulo ({{ modulo.nombre_modulo }}) - {{ proyecto.nombre_proyecto }} <small>(Lista de paquetes)</small>
+	            <h1>
+	                <b>Paquete:</b> <small>{{ paquete.nombre_paquete }}</small> - {{ proyecto.nombre_proyecto }}
 	            </h1>
+	            <h4><b>Ruta:</b> <small>{{ paquete.path }}</small></h4>
 	        </div>
 	    </div> 
 	    <!-- /. ROW  -->
 
-		<form method="post" id="formularioPaquete-js">
-        	<div class="alert alert-danger">Hola</div>
-      		{% csrf_token %}
-      		<input type="hidden" name="proyecto" id="id_proyecto" value="{{ proyecto.slug }}" />
-      		<input type="hidden" name="modulo" value="{{ modulo.id }}" />
-      		<div class="form-group">
-                <label>¿Su paquete depende de un módulo?</label>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="tipo_paquete_radio" id="id_tipo_paquete_radio1" value="si">Si
-                    </label>
-                </div>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="tipo_paquete_radio" id="id_tipo_paquete_radio2" value="no">No
-                    </label>
-                </div>
-            </div>
+		<!-- ROW -->
+		<div class="row">
+	        <div class="col-md-12">
+				<form method="post" id="formularioPaquete-js">
+		        	<div class="alert alert-danger">Hola</div>
+		      		{% csrf_token %}
+		      		<input type="hidden" name="proyecto" id="id_proyecto" value="{{ proyecto.slug }}" />
+		      		<input type="hidden" name="modulo" value="{{ modulo.id }}" />
+		      		<div class="form-group">
+		                <label>¿Su paquete depende de un módulo?</label>
+		                <div class="radio">
+		                    <label>
+		                        <input type="radio" name="tipo_paquete_radio" id="id_tipo_paquete_radio1" value="si">Si
+		                    </label>
+		                </div>
+		                <div class="radio">
+		                    <label>
+		                        <input type="radio" name="tipo_paquete_radio" id="id_tipo_paquete_radio2" value="no">No
+		                    </label>
+		                </div>
+		            </div>
 
-            <div class="form-group" id="id_tipo_agregar_paquete_group">
-                <label>¿Agregará un paquete ya existente o crear uno nuevo?</label>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="tipo_agregar_paquete_radio" id="id_tipo_agregar_paquete_radio1" value="existente">Agregar paquete existente
-                    </label>
-                </div>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="tipo_agregar_paquete_radio" id="id_tipo_agregar_paquete_radio2" value="nuevo">Crear uno nuevo
-                    </label>
-                </div>
-            </div>
+		            <div class="form-group" id="id_tipo_agregar_paquete_group">
+		                <label>¿Agregará un paquete ya existente o crear uno nuevo?</label>
+		                <div class="radio">
+		                    <label>
+		                        <input type="radio" name="tipo_agregar_paquete_radio" id="id_tipo_agregar_paquete_radio1" value="existente">Agregar paquete existente
+		                    </label>
+		                </div>
+		                <div class="radio">
+		                    <label>
+		                        <input type="radio" name="tipo_agregar_paquete_radio" id="id_tipo_agregar_paquete_radio2" value="nuevo">Crear uno nuevo
+		                    </label>
+		                </div>
+		            </div>
 
-            <div class="form-group" id="id_ubicacion_paquete_group">
-                <label>¿Donde se ubica el paquete?</label>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="ubicacion_paquete_radio" id="id_ubicacion_paquete_radio1" value="modulo_principal">En un módulo principal
-                    </label>
-                </div>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="ubicacion_paquete_radio" id="id_ubicacion_paquete_radio2" value="submodulo">En un submódulo
-                    </label>
-                </div>
-            </div>
+		            <div class="form-group" id="id_ubicacion_paquete_group">
+		                <label>¿Donde se ubica el paquete?</label>
+		                <div class="radio">
+		                    <label>
+		                        <input type="radio" name="ubicacion_paquete_radio" id="id_ubicacion_paquete_radio1" value="modulo_principal">En un módulo principal
+		                    </label>
+		                </div>
+		                <div class="radio">
+		                    <label>
+		                        <input type="radio" name="ubicacion_paquete_radio" id="id_ubicacion_paquete_radio2" value="submodulo">En un submódulo
+		                    </label>
+		                </div>
+		            </div>
 
-            <div class="form-group" id="id_select_group_modulo_principal">
-                <label>Seleccione el módulo principal: </label>
-                <select class="form-control" name="modulo_principal" id="id_modulo_principal">
-                	<option value="">---------</option>  
-                </select>
-            </div>
+		            <div class="form-group" id="id_select_group_modulo_principal">
+		                <label>Seleccione el módulo principal: </label>
+		                <select class="form-control" name="modulo_principal" id="id_modulo_principal">
+		                	<option value="">---------</option>  
+		                </select>
+		            </div>
 
-            <div class="form-group" id="id_select_group_submodulos_totales">
-                <label>Seleccione el submódulo: </label>
-                <select class="form-control" name="submodulos_totales" id="id_submodulos_totales">
-                	<option value="">---------</option>
-                </select>
-            </div>
+		            <div class="form-group" id="id_select_group_submodulos_totales">
+		                <label>Seleccione el submódulo: </label>
+		                <select class="form-control" name="submodulos_totales" id="id_submodulos_totales">
+		                	<option value="">---------</option>
+		                </select>
+		            </div>
 
-            <div class="form-group" id="id_select_group_tipos_paquetes">
-                <label>Seleccione el tipo de paquete: </label>
-                <select class="form-control" name="select_tipo_paquete" id="id_select_tipo_paquete">
-                	<option value="">---------</option>
-                </select>
-            </div>
+		            <div class="form-group" id="id_select_group_tipos_paquetes">
+		                <label>Seleccione el tipo de paquete: </label>
+		                <select class="form-control" name="select_tipo_paquete" id="id_select_tipo_paquete">
+		                	<option value="">---------</option>
+		                </select>
+		            </div>
 
-            <div class="form-group" id="id_select_group_paquetes_modulo">
-                <label>Seleccione el paquete: </label>
-                <select class="form-control" name="paquete" id="id_paquete">
-                	<option value="">---------</option>
-                </select>
-            </div>
+		            <div class="form-group" id="id_select_group_paquetes_modulo">
+		                <label>Seleccione el paquete: </label>
+		                <select class="form-control" name="paquete" id="id_paquete">
+		                	<option value="">---------</option>
+		                </select>
+		            </div>
 
-            <div class="form-group" id="id_formulario_agregar_paquete">
-      			{{ form.as_p }}
-      		</div>
+		            <div class="form-group" id="id_formulario_agregar_paquete">
+		      			{{ form.as_p }}
+		      		</div>
 
-      		<div class="form-group" id="id_input_button_group">
-		        <input type="submit" name="add_another" id="agregarButton-js" class="btn btn-danger" value="Guardar y agregar otro">
-		        <input type="submit" name="save" id="agregarButton-js" class="btn btn-info" value="Guardar">
-      		</div>
-	        
-	    </form>
+		      		<div class="form-group" id="id_input_button_group">
+				        <input type="submit" name="add_another" id="agregarButton-js" class="btn btn-danger" value="Guardar y agregar otro">
+				        <input type="submit" name="save" id="agregarButton-js" class="btn btn-info" value="Guardar">
+		      		</div>
+			        
+			    </form>
+	    	</div>
+	    </div>
+	    <!-- /. ROW -->
 	</div>
 	<!-- /. PAGE INNER  -->
 

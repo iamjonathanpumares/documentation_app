@@ -13,7 +13,7 @@
 
 	<div id="page-inner">
 
-		<!-- Modal -->
+		<!-- Modal Agregar Paquete -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
@@ -38,16 +38,138 @@
 		</div>
 		<!-- ./Modal -->
 
+		<!-- Modal Eliminar Paquete -->
+		<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Quitar Paquete</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>¿Realmente desea eliminar el paquete <span id="id_span_paquete"></span>?</p>
+		      </div>
+
+		      <div class="modal-footer">
+		      	<form method="post" id="formularioDeletePaquete-js">
+		      		{% csrf_token %}
+		      		<input type="hidden" id="id_paquete_delete" name="paquete_delete" />
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <input type="submit" id="eliminarButton-js" class="btn btn-info" value="Eliminar">
+			    </form>
+		      </div>
+
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
 		<div class="row">
-	        <div class="col-md-12">
-	            <h1 class="page-header">
-	                Módulo ({{ modulo.nombre_modulo }}) - {{ proyecto.nombre_proyecto }} <small>(Lista de paquetes)</small>
-	            </h1>
-	        </div>
-	    </div> 
+		    <div class="col-md-12 col-sm-12">
+		        <div class="well">
+		            <h4>Módulo: {{ modulo.nombre_modulo }}</h4>
+		            <h5>
+		            	Descripción: {{ modulo.descripcion_modulo }}
+		            </h5>
+		            <h5>
+		            	Ruta: {{ modulo.path }}
+		            </h5>
+		        </div>
+		    </div>
+		</div>
 	    <!-- /. ROW  -->
 
+		<!-- ROW -->
+	    <div class="row" id="id_row_paneles">
+	        <div class="col-md-3 col-sm-12 col-xs-12">
+	            <div class="panel panel-primary text-center no-boder bg-color-green green">
+	            	<a href="#lista_paquetes">
+		                <div class="panel-left pull-left green">
+		                    <i class="fa fa-archive fa-5x"></i>
+		                    
+		                </div>
+		                <div class="panel-right pull-right">
+							<h3>{{ no_paquetes }}</h3>
+		                   <strong> Número de paquetes</strong>
+		                </div>
+	                </a>
+	            </div>
+	        </div>
+	        <div class="col-md-3 col-sm-12 col-xs-12">
+	        	
+	            <div class="panel panel-primary text-center no-boder bg-color-blue blue">
+		            <a href="{% url 'submodulos-list' slug=proyecto.slug id=modulo.id %}">
+	                    <div class="panel-left pull-left blue">
+	                    	<i class="fa fa-level-down fa-5x"></i>
+						</div>
+		                    
+		                <div class="panel-right pull-right">
+						<h3>{{ no_submodulos }} </h3>
+		                   <strong> Número de submódulos</strong>
+
+		                </div>
+		            </a>
+	            </div>
+	            
+	        </div>
+	        <div class="col-md-3 col-sm-12 col-xs-12">
+	            <div class="panel panel-primary text-center no-boder bg-color-red red">
+	                <div class="panel-left pull-left red">
+	                    <i class="fa fa fa-comments fa-5x"></i>
+	                   
+	                </div>
+	                <div class="panel-right pull-right">
+					 <h3>15,823 </h3>
+	                   <strong> Comments </strong>
+
+	                </div>
+	            </div>
+	        </div>
+	        <div class="col-md-3 col-sm-12 col-xs-12">
+	            <div class="panel panel-primary text-center no-boder bg-color-brown brown">
+	                <div class="panel-left pull-left brown">
+	                    <i class="fa fa-users fa-5x"></i>
+	                    
+	                </div>
+	                <div class="panel-right pull-right">
+					<h3>36,752 </h3>
+	                 <strong>No. of Visits</strong>
+
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <!-- /. ROW -->
+
+	    <a name="lista_paquetes"></a>
+
+		<!-- ROW -->
+	    <div class="row" id="id_row_select_filter">
+	    	<div class="col-md-12 col-sm-12 col-xs-12">
+	    		<form method="get" id="id_form_q">
+	    			<div class="form-group">
+	    				<label class="col-sm-1 col-sm-1 control-label">Filtrar:</label>
+	    				<div class="col-sm-4">
+		    				<select name="q" id="id_q" class="form-control">
+								<option value="">---------</option>
+								{% for tipo_paquete in tipos_paquetes %}
+									{% ifequal tipo_paquete.clave_paquete q %}
+										<option value="{{ tipo_paquete.clave_paquete }}" selected="true">{{ tipo_paquete.tipo_paquete }}</option>
+									{% else %}
+										<option value="{{ tipo_paquete.clave_paquete }}">{{ tipo_paquete.tipo_paquete }}</option>
+									{% endifequal %}
+								{% endfor %}
+							</select>
+						</div>
+	    			</div>
+					
+				</form>
+			</div>
+	    </div>
+	    <!-- /. ROW -->
+
 		<div class="row" id="js-rowProject">
+			<h4>Lista de paquetes</h4>
 			<div class="table-responsive">
 	            <table class="table table-striped table-bordered table-hover">
 	                <thead>
@@ -60,11 +182,16 @@
 	                </thead>
 	                <tbody class="TableBody">
 	                	{% for paquete in object_list %}
-	                    <tr class="TableBody-row">
+	                    <tr class="TableBody-row" id="tr_{{ paquete.id }}">
 	                        <td class="TableBody-data">{{ paquete.nombre_paquete }}</td>
 	                        <td class="TableBody-data">{{ paquete.descripcion_paquete }}</td>
 	                        <td class="TableBody-data">{{ paquete.tipo_paquete }}</td>
-	                        <td class="TableBody-data"><a href="/documentacion/paquetes-requeridos/{{ proyecto.slug }}/{{ paquete.id }}/" class="btn btn-primary btn-xs" title="Paquetes requeridos"><i class="fa fa-archive"></i></a></td>
+	                        <td class="TableBody-data">
+		                        <a href="{% url 'paquetes-requeridos-add' slug=proyecto.slug id=paquete.id %}" class="btn btn-primary btn-xs" title="Paquetes requeridos"><i class="fa fa-archive"></i></a>
+		                        <a href="{% url 'paquetes-requeridos-list' slug=proyecto.slug id=paquete.id %}" class="btn btn-primary btn-xs" title="Lista de paquetes requeridos"><i class="fa fa-list"></i></a>
+		                        <button type="button" id="{{ paquete.id }}" class="btn btn-danger btn-xs delete" data-name="{{ paquete.nombre_paquete }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
+		                    </td>
+
 	                        
 	                    </tr>
 	                    {% endfor %}
@@ -85,7 +212,7 @@
 {% endblock js_scripts %}
 
 {% block custom_scripts %}
-	<!-- <script src="{% static "proyectos/js/proyecto-list-scripts.js" %}"></script> -->
+	<script src="{% static "documentation_app/js/utils.js" %}"></script>
 	<script>
 	/*
 	function ocultarAlert()
@@ -138,6 +265,24 @@
 			$('#id_descripcion_paquete').text('');
 			setTimeout(ocultarAlert, 3000);
 		});
+	});
+
+	$('#id_q').change(function () {
+		$('#id_form_q').submit();
+	});
+
+	$('.delete').click(function () {
+		var id = $(this).attr('id');
+        var name = $(this).data('name');
+
+        $('#id_paquete_delete').val(id);
+        $('#id_span_paquete').text(name);
+	});
+
+	$('#formularioDeletePaquete-js').ajaxForm(function () {
+		var id_paquete_delete = $('#id_paquete_delete').val();
+		$('#myModalDelete').modal('hide');
+		$('#tr_' + id_paquete_delete).remove();
 	});
 	
 	</script>

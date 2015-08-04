@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect, get_list_or_40
 from django.http import HttpResponse
 from django.views.generic import ListView
 
-from .models import Modulo, Paquete
+from .models import Modulo, Paquete, TipoPaquete
 from .forms import ModuloForm, PaqueteForm
 from proyectos.models import Proyecto
 
@@ -63,27 +63,57 @@ class PaqueteListView(ListView):
 	def get_queryset(self):
 		slug = self.kwargs['slug']
 		id = self.kwargs['id']
-		queryset = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id)
-		return queryset
+		name = self.request.GET.get('q', '')
+		if (name != ''):
+			object_list = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id, tipo_paquete__clave_paquete=name)
+			self.paginate_by = None
+		else:
+			object_list = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id)
+			self.paginate_by = 15
+		return object_list
+
+		"""queryset = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id)
+		return queryset"""
 
 	def get_context_data(self, **kwargs):
 		# Entrada
 	    context = super(PaqueteListView, self).get_context_data(**kwargs)
 	    slug = self.kwargs['slug']
 	    id = self.kwargs['id']
+	    q = self.request.GET.get('q', '')
 
 	    # Proceso
-	    context['proyecto'] = get_object_or_404(Proyecto, slug=slug)
-	    context['modulo'] = get_object_or_404(Modulo, id=id)
+	    proyecto = get_object_or_404(Proyecto, slug=slug)
+	    modulo = get_object_or_404(Modulo, id=id)
+	    no_paquetes = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id).count()
+	    tipos_paquetes = TipoPaquete.objects.filter(paquetes__modulo__proyecto__slug=slug, paquetes__modulo__id=id).distinct()
+	    context['proyecto'] = proyecto
+	    context['modulo'] = modulo
+	    context['no_submodulos'] = modulo.submodulos.all().count()
+	    context['no_paquetes'] = no_paquetes
+	    context['tipos_paquetes'] = tipos_paquetes
+	    context['q'] = q
 	    context['form'] = PaqueteForm()
 
 	    # Salida
 	    return context
 
 	def post(self, request, *args, **kwargs):
-		form = PaqueteForm(request.POST)
-		if form.is_valid():
-			paquete = form.save(commit=False)
+		# Elimina un proyecto en la lista
+		if 'paquete_delete' in request.POST:
+			try:
+				id_paquete = request.POST['paquete_delete']
+				paquete = Paquete.objects.get(pk=id_paquete)
+				mensaje = { "status": "True" }
+				paquete.delete()
+				return HttpResponse(json.dumps(mensaje))
+			except:
+				mensaje = { "status": "False", "action": "Eliminar" }
+				return HttpResponse(json.dumps(mensaje))
+		else:		
+			form = PaqueteForm(request.POST)
+			if form.is_valid():
+				paquete = form.save(commit=False)
 
 def PaqueteRequeridoView(request, slug, id):
 	proyecto_instance = Proyecto.objects.get(slug=slug)
@@ -126,7 +156,7 @@ def PaqueteRequeridoView(request, slug, id):
 					paquete_instance.paquetes_requeridos.add(paquete)
 
 			if 'save' in request.POST:
-				return redirect(reverse('paquetes-modulo', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.modulo.id }))
+				return redirect(reverse('paquetes-requeridos-list', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.id }))
 			elif 'add_another' in request.POST:
 				return redirect(reverse('paquetes-requeridos', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.id }))
 	
@@ -134,7 +164,26 @@ def PaqueteRequeridoView(request, slug, id):
 		form = PaqueteForm()
 
 
-	return render(request, 'documentacion/paquete_requerido_form.html', { 'proyecto': proyecto_instance, 'form': form })
+	return render(request, 'documentacion/paquete_requerido_form.html', { 'proyecto': proyecto_instance, 'paquete': paquete_instance, 'form': form })
+
+def PaqueteRequeridoListView(request, slug, id):
+	proyecto = get_object_or_404(Proyecto, slug=slug)
+	paquete = get_object_or_404(Paquete, pk=id)
+	paquetes_modulos = paquete.paquetes_requeridos.exclude(modulo=None)
+	paquetes_independientes = paquete.paquetes_requeridos.filter(modulo=None)
+
+	if request.method == 'POST':
+		if 'paquete' in request.POST:
+			try:
+				id_paquete = request.POST['paquete']
+				paquete_requerido = Paquete.objects.get(pk=id_paquete)
+				paquete.paquetes_requeridos.remove(paquete_requerido)
+				return redirect(reverse('paquetes-requeridos-list', kwargs={ 'slug': proyecto.slug, 'id': paquete.id }))
+			except:
+				mensaje = { "status": "False" }
+				return HttpResponse(json.dumps(mensaje))
+
+	return render(request, 'documentacion/paquete_requerido_list.html', { 'proyecto': proyecto, 'paquete': paquete, 'paquetes_modulos': paquetes_modulos, 'paquetes_independientes': paquetes_independientes })
 
 def ModuloCreateView(request, slug, id=None):
 	proyecto_instance = get_object_or_404(Proyecto, slug=slug)

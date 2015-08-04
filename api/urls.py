@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 	url(r'^paquetes-independientes/(?P<slug>[\w\-]+)/(?P<clave_paquete>[\w\-]+)/$', views.PaqueteListAPIView.as_view()),
 	url(r'^paquetes-requeridos/(?P<pk>[0-9]+)/$', views.PaqueteRequeridoCreateAPIView),
 	url(r'^paquetes/$', views.PaqueteCreateAPIView),
+	url(r'^paquetes/(?P<pk>[0-9]+)/$', views.PaqueteDetailAPIView.as_view()),
 	url(r'^proyectos/(?P<pk>[0-9]+)/$', views.ProyectoDetailAPIView.as_view()),
 	url(r'^procesos/(?P<pk>[0-9]+)/$', views.ProcesoDetailAPIView.as_view()),
 )

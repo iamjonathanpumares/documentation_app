@@ -29,7 +29,7 @@ class TipoPaqueteListAPIView(generics.ListAPIView):
 		return queryset
 
 class PaqueteListAPIView(generics.ListAPIView):
-	queryset = Proyecto.objects.all()
+	queryset = Paquete.objects.all()
 	serializer_class = serializers.PaqueteSerializer
 
 	def get_queryset(self):
@@ -39,6 +39,10 @@ class PaqueteListAPIView(generics.ListAPIView):
 		if not queryset:
 			return Response(status=status.HTTP_404_NOT_FOUND)
 		return queryset
+
+class PaqueteDetailAPIView(generics.DestroyAPIView):
+	queryset = Paquete.objects.all()
+	serializer_class = serializers.PaqueteSerializer
 
 class ModulosPrincipalesListAPIView(generics.ListAPIView):
 	queryset = Modulo.objects.filter(modulo_depende=None)

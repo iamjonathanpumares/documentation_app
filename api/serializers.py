@@ -30,7 +30,7 @@ class PaqueteRequeridoSerializer(serializers.ModelSerializer):
 		fields = ('paquetes_requeridos',)
 
 class PaqueteSerializer(serializers.ModelSerializer):
-	tipo_paquete = TipoPaqueteSerializer()
+	#tipo_paquete = TipoPaqueteSerializer()
 
 	class Meta:
 		model = Paquete
