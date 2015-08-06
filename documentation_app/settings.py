@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'proyectos',
     'documentacion',
     'procesos',
+    'casos_de_uso',
     'api',
     'corsheaders',
 )
