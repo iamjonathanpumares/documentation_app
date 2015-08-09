@@ -74,6 +74,8 @@
 		            			
 		            			<a href="/procesos/{{ proyecto.slug }}" class="btn btn-success flexible-item"><i class="fa fa-book "></i> Procesos</a>
 
+		            			<a href="{% url 'actores-list' slug=proyecto.slug %}" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Casos de uso</a>
+
 		            			<button class="btn btn-warning flexible-item"><i class="fa fa-book "></i> Manual</button>
 				            		
 		            			<a href="/proyectos/update/{{ proyecto.slug }}/" class="btn btn-primary flexible-item"><i class="fa fa-edit "></i> Editar</a>
@@ -85,14 +87,6 @@
 								<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
 								  Eliminar
 								</button>
-				            			
-				            	
-		            			
-		            			
-		            			
-				            			
-				            		
-				            	
 				            
 				        	</div>
 			        	</div>

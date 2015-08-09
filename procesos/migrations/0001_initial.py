@@ -7,7 +7,6 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('documentacion', '0001_initial'),
         ('proyectos', '0001_initial'),
     ]
 
@@ -19,7 +18,6 @@ class Migration(migrations.Migration):
                 ('nombre_actividad', models.CharField(max_length=150, verbose_name=b'Nombre de la actividad')),
                 ('tipo_actividad', models.CharField(max_length=1, verbose_name=b'Tipo de actividad', choices=[(b'E', b'Entrada'), (b'P', b'Proceso'), (b'D', b'Decisi\xc3\xb3n'), (b'S', b'Salida')])),
                 ('orden', models.PositiveSmallIntegerField()),
-                ('modulo', models.ForeignKey(related_name='actividades', blank=True, to='documentacion.Modulo', null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -31,9 +29,22 @@ class Migration(migrations.Migration):
                 ('proyecto', models.ForeignKey(related_name='procesos', to='proyectos.Proyecto')),
             ],
         ),
+        migrations.CreateModel(
+            name='Responsable',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('responsable', models.CharField(max_length=50, verbose_name=b'Responsable involucrado en el proceso')),
+                ('proceso', models.ForeignKey(related_name='responsables', to='procesos.Proceso')),
+            ],
+        ),
         migrations.AddField(
             model_name='actividad',
             name='proceso',
             field=models.ForeignKey(related_name='actividades', to='procesos.Proceso'),
+        ),
+        migrations.AddField(
+            model_name='actividad',
+            name='responsable',
+            field=models.ForeignKey(related_name='actividades', to='procesos.Responsable'),
         ),
     ]

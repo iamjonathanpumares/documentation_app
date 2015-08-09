@@ -14,4 +14,6 @@ urlpatterns = patterns('',
 	url(r'^paquetes/(?P<pk>[0-9]+)/$', views.PaqueteDetailAPIView.as_view()),
 	url(r'^proyectos/(?P<pk>[0-9]+)/$', views.ProyectoDetailAPIView.as_view()),
 	url(r'^procesos/(?P<pk>[0-9]+)/$', views.ProcesoDetailAPIView.as_view()),
+	# app casos_de_uso ---------------------------------------------------------
+	url(r'^tareas/$', views.TareaCreateAPIView.as_view()),
 )

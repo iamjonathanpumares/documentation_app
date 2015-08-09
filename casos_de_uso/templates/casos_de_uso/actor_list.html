@@ -1,0 +1,155 @@
+{% extends 'casos_de_uso/base.html' %}
+{% load staticfiles %}
+
+{% block elements_navbar %}
+    <a href="{% url 'actor-create' slug=proyecto.slug %}" class="btn btn-success btn-crear-proyecto">Crear Actor</a>
+{% endblock elements_navbar %}
+
+{% block page_wrapper %}
+
+	<div id="page-inner">
+
+		<!-- Modal Eliminar Actor -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Eliminar Proyecto</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Desea eliminar todo el contenido de su módulo <span id="js-spanNameProject"></span>?</p>
+		      </div>
+		      <div class="modal-footer">
+		      	<form method="post" id="js-frmEliminar">
+		      		{% csrf_token %}
+		      		<input type="hidden" id="modal_id_proyecto" name="proyecto_id" />
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="submit" class="btn btn-danger">Eliminar</button>
+			    </form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
+		<!-- Modal Actualizar Actor -->
+		<div class="modal fade" id="myModalUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Editar Actor</h4>
+		      </div>
+		      <div class="modal-body">
+		          <!-- Formulario -->
+		          <div class="form-panel">
+		            <h4 class="mb"><i class="fa fa-angle-right"></i> Información General</h4>
+		            <form enctype="multipart/form-data" class="form-horizontal style-form" method="post" id="js-frmAgregarCupon">
+		              {% csrf_token %}
+		              <div class="form-group">
+		                {{ form.non_field.errors }}
+		                {{ form.titulo.errors }}
+		                <label class="col-sm-2 col-sm-2 control-label">Rol:</label>
+		                <div class="col-sm-10">
+		                  <input type="text" name="rol" id="id_rol" class="form-control">
+		                </div>
+		              </div>
+
+		              <button type="reset" class="btn btn-primary goright ml">Limpiar</button>&nbsp;
+		              <button type="submit" id="agregar-cupon" class="btn btn-info  btn-sm" name="guardar-agregar" style="margin-right: 0.8em">Guardar</button>
+		          </form>
+		        </div>
+		        <!-- /. End Formulario -->
+		      </div>
+		      <div class="modal-footer">
+		      	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
+		<div class="row">
+	        <div class="col-md-12">
+	            <h1 class="page-header">
+	                Actores del {{ proyecto.nombre_proyecto }}
+	            </h1>
+	        </div>
+	    </div> 
+	    <!-- /. ROW  -->
+
+		<div class="row flexible-content" id="js-rowProject">
+			{% for actor in actores %}
+			    <div class="col-md-4 col-sm-4" id="div{{ actor.id }}">
+			    	
+			        <div class="panel panel-info">
+			        	
+				            <div class="panel-heading">
+				                Actor: 
+				            </div>
+
+				            <div class="panel-body">
+				            	{{ actor.rol }}
+				            </div>
+				            
+				            <div class="panel-footer">
+				                Opciones
+				            </div>
+			            
+			            <div class="panel-body">
+				            <div class="flexible-actions">
+				            	<a href="{% url 'actor-detail' slug=proyecto.slug id=actor.id %}" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Tareas</a>
+
+		            			<!-- Button update trigger modal -->
+								<button id="{{ actor.id }}" type="button" class="btn btn-primary update flexible-item" data-toggle="modal" data-target="#myModalUpdate" data-rol="{{ actor.rol }}"><i class="fa fa-edit"></i>
+								  Editar
+								</button>
+		            		
+		            			<!-- Button delete trigger modal -->
+								<button id="{{ actor.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ actor.nombre_modulo }}"><i class="fa fa-trash-o"></i>
+								  Eliminar
+								</button>
+				            			
+				            	
+		            			
+				            			
+				            		
+				            	
+				            
+				        	</div>
+			        	</div>
+			        
+			    	</div>
+			    </div>
+
+		    {% empty %}
+				<div class="col-md-12 col-sm-12">
+			        <div class="alert alert-warning">
+			            No tienes actores aún
+			        </div>
+			    </div>
+		    {% endfor %}
+		    
+		</div>
+		<!-- /. ROW  -->
+	</div>
+	<!-- /. PAGE INNER  -->
+
+{% endblock page_wrapper %}
+
+{% block js_scripts %}
+	<script src="{% static "documentation_app/js/jquery.form.min.js" %}"></script>
+{% endblock js_scripts %}
+
+{% block custom_scripts %}
+	<script src="{% static "proyectos/js/proyecto-list-scripts.js" %}"></script>
+	<script src="{% static "casos_de_uso/js/utils.js" %}"></script>
+	<script>
+		$('.update').click(function () {
+			var rol = $(this).data('rol');
+			$('#id_rol').val(rol);
+			$('#id_rol').focus();
+		});
+	</script>
+{% endblock custom_scripts %}

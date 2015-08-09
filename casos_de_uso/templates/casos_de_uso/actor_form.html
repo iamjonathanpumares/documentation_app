@@ -1,0 +1,41 @@
+{% extends 'casos_de_uso/base.html' %}
+{% load staticfiles %}
+	
+{% block page_wrapper %}
+<div id="page-inner">
+
+	<div class="row">
+	    <div class="col-md-12 col-sm-12">
+	        <div class="well">
+	        	<h1>Crear un actor</h1>
+	        	<h4>
+	        		Instrucciones: <br> 1. Identifique a sus actores del sistema. <br>
+	        					   2. No repita actores ya agregados.
+	        	</h4>
+	            <h5>
+	            	Definición de actor: Un actor es una entidad externa que interactua con el sistema en un caso de uso. Los actores pueden ser gente real (por ejemplo, usuarios del sistema), otros ordenadores o eventos externos.
+	            </h5>
+	        </div>
+	    </div>
+	</div>
+	<!-- /. ROW  -->
+    
+	<form action="" method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		
+		{% ifequal action 'create' %}
+			<input type="submit" value="Crear" class="btn btn-success bt-lg">
+		{% endifequal %}
+
+		{% ifequal action 'update' %}
+			<input type="submit" value="Actualizar" class="btn btn-success bt-lg">
+		{% endifequal %}
+	</form>
+
+</div>
+{% endblock page_wrapper %}
+
+{% block custom_scripts %}
+<script src="{% static "procesos/js/proceso-scripts.js" %}"></script>
+{% endblock custom_scripts %}

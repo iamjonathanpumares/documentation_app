@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="utf-8" />
@@ -14,8 +14,6 @@
     <link href="{% static "documentation_app/js/morris/morris-0.4.3.min.css" %}" rel="stylesheet" />
     <!-- Custom Styles-->
     <link href="{% static "documentation_app/css/custom-styles.css" %}" rel="stylesheet" />
-    {% block custom_styles %}
-    {% endblock custom_styles %}
     <link href="{% static "proyectos/css/proyecto-styles.css" %}" rel="stylesheet" />
     <!-- Google Fonts-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
@@ -259,11 +257,11 @@
                         </li>
 
                         <li>
-                            <a class="active-menu" href="/procesos/{{ proyecto.slug }}/"><i class="fa fa-list"></i> Procesos</a>
+                            <a href="/procesos/{{ proyecto.slug }}/"><i class="fa fa-list"></i> Procesos</a>
                         </li>
 
                         <li>
-                            <a href="/documentacion/{{ proyecto.slug }}/"><i class="fa fa-dot-circle-o"></i> Módulos<span class="fa arrow"></span></a>
+                            <a class="active-menu" href="/documentacion/{{ proyecto.slug }}/"><i class="fa fa-dot-circle-o"></i> Módulos<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="/documentacion/{{ proyecto.slug }}/">Módulos</a>
