@@ -10,7 +10,7 @@
 	<div id="page-inner">
 
 		<!-- Modal Eliminar Actor -->
-		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -18,14 +18,14 @@
 		        <h4 class="modal-title" id="myModalLabel">Eliminar Proyecto</h4>
 		      </div>
 		      <div class="modal-body">
-		        <p>Desea eliminar todo el contenido de su módulo <span id="js-spanNameProject"></span>?</p>
+		        <p>Desea eliminar todo el contenido de su actor <span id="id_span_actor"></span>?</p>
 		      </div>
 		      <div class="modal-footer">
 		      	<form method="post" id="js-frmEliminar">
 		      		{% csrf_token %}
-		      		<input type="hidden" id="modal_id_proyecto" name="proyecto_id" />
+		      		<input type="hidden" id="id_actor" name="actor">
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			        <button type="submit" class="btn btn-danger">Eliminar</button>
+			        <input type="submit" id="id_button_eliminar" class="btn btn-danger" value="Eliminar">
 			    </form>
 		      </div>
 		    </div>
@@ -107,7 +107,7 @@
 								</button>
 		            		
 		            			<!-- Button delete trigger modal -->
-								<button id="{{ actor.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ actor.nombre_modulo }}"><i class="fa fa-trash-o"></i>
+								<button id="{{ actor.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModalDelete" data-id="{{ actor.id }}" data-rol="{{ actor.rol }}"><i class="fa fa-trash-o"></i>
 								  Eliminar
 								</button>
 				            			
@@ -143,13 +143,77 @@
 {% endblock js_scripts %}
 
 {% block custom_scripts %}
-	<script src="{% static "proyectos/js/proyecto-list-scripts.js" %}"></script>
+	<script src="{% static "documentation_app/js/utils.js" %}"></script>
 	<script src="{% static "casos_de_uso/js/utils.js" %}"></script>
 	<script>
+		
 		$('.update').click(function () {
 			var rol = $(this).data('rol');
 			$('#id_rol').val(rol);
 			$('#id_rol').focus();
 		});
+
+		$('.delete').click(function () {
+			var id = $(this).data('id');
+			var rol = $(this).data('rol');
+
+			
+			$('#id_actor').val(id);
+			$('#id_span_actor').text(rol);
+		});
+
+		deleteElement('js-rowProject', 'js-frmEliminar', 'myModalDelete');
+
+		/*var id_container = 'js-rowProject',
+			id_form = 'js-frmEliminar',
+			id_modal = 'myModalDelete';
+
+		var options = {
+		  dataType: 'json',
+		  success: function(response)
+		  {
+		    if(response.status=="True"){
+		      alert("Eliminado!");
+		      var id = response.id;
+		      var no_elementos= $('#' + id_container).children('div').length;
+		      console.log(no_elementos);
+
+		      if(no_elementos==1) 
+		      {
+		        location.reload();
+		      }
+		      else 
+		      {
+		        $('#div' + id).remove();
+		        $('#' + id_modal).modal('hide');
+		      }
+		    }
+		    else
+		    {
+		      alert("Hubo un error al eliminar!");
+		      $('#' + id_modal).modal('hide');
+		    }
+		  }
+		};
+
+		$('#' + id_form).ajaxForm(options);*/
+
+		
+
+		/*$('#id_button_eliminar').click(function () {
+			var id = $('#id_actor').val();
+
+
+			ajaxDeleteActor(id, $('#js-frmEliminar').serialize(), function (error, data) {
+				if (error)
+				{
+					console.log(error);
+				}
+				else
+				{
+					console.log(data);
+				}
+			});
+		});*/
 	</script>
 {% endblock custom_scripts %}

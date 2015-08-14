@@ -2,7 +2,7 @@ from rest_framework import serializers
 from proyectos.models import Proyecto
 from procesos.models import Proceso, Actividad
 from documentacion.models import Paquete, TipoPaquete, Modulo
-from casos_de_uso.models import Tarea
+from casos_de_uso.models import Tarea, Actor
 
 class ProyectoSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -66,3 +66,8 @@ class TareaSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Tarea
 		fields = ('id', 'actor', 'descripcion',)
+
+class ActorSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Actor
+		fields = ('id', 'rol',)

@@ -56,7 +56,7 @@
 		        		<li>¿Debe el sistema informar al usuario de los cambios internos?</li>
 		        	</ul>
 		            <h5>
-		            	Descripción de un caso de uso: Un caso de uso describe qué hace un sistema pero no especifica cómo lo hace
+		            	Descripción de un caso de uso: Un caso de uso describe lo qué hace un sistema pero no especifica cómo lo hace. Es la interacción entre una persona o dispositivo externo y el sistema.
 		            </h5>
 		        </div>
 		    </div>
@@ -174,7 +174,7 @@
 		$('.alert-success').slideToggle();
 	}
 
-	$('#id_nombre_actividad').focus();
+	$('#id_descripcion').focus();
 	$('.alert-success').hide();
 	$('.alert-danger').hide();
 
@@ -186,7 +186,6 @@
 			}
 			else
 			{
-				console.log(data);
 				var $clone = $fila.clone(true);
 				var id = data.id;
 				var descripcion = data.descripcion;

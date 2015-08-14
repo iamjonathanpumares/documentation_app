@@ -14,13 +14,29 @@ function ajaxUpdateActor(id, callback)
 	});
 }
 
-function ajaxCreateTarea(data, callback)
+function ajaxCreateTarea(datos, callback)
 {
 	$.ajax({
 		url: '/api/tareas/',
 		type: 'POST',
 		dataType: 'json',
-		data: data
+		data: datos
+	})
+	.done(function (data) {
+		callback(null, data);
+	})
+	.fail(function (xhr, status, error) {
+		callback(xhr, null);
+	});
+}
+
+function ajaxDeleteActor(id, datos, callback)
+{
+	console.log(datos);
+	$.ajax({
+		url: '/api/actores/' + id + '/',
+		type: 'DELETE',
+		data: datos
 	})
 	.done(function (data) {
 		callback(null, data);

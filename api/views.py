@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from proyectos.models import Proyecto
 from documentacion.models import Modulo, Paquete, TipoPaquete
 from procesos.models import Proceso
-from casos_de_uso.models import Tarea
+from casos_de_uso.models import Tarea, Actor
 from proyectos.serializers import ProyectoSerializer
 
 #from .serializers import PaqueteSerializer, SubmoduloTotalesSerializer, ModuloSerializer
@@ -107,6 +107,10 @@ def PaqueteRequeridoCreateAPIView(request, pk):
 class TareaCreateAPIView(generics.CreateAPIView):
 	queryset = Tarea.objects.all()
 	serializer_class = serializers.TareaSerializer
+
+class ActorDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Actor.objects.all()
+	serializer_class = serializers.ActorSerializer
 
 """@api_view(['GET', 'POST'])
 def ProcesoDetailAPIView(request, id):

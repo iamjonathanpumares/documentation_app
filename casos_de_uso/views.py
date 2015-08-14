@@ -1,7 +1,11 @@
+import json
+
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from proyectos.models import Proyecto
+from documentation_app.utils import DeleteElementUtil
 
 from .forms import ActorForm
 from .models import Actor
@@ -9,6 +13,18 @@ from .models import Actor
 def ActorListView(request, slug):
 	proyecto = get_object_or_404(Proyecto, slug=slug)
 	actores = Actor.objects.filter(proyecto__slug=slug)
+	if request.method == 'POST':
+		# Elimina un actor en la lista
+		if 'actor' in request.POST:
+			id_actor = request.POST['actor']
+			try:
+				object = Actor.objects.get(pk=id_actor)
+				mensaje = { "status": "True", "id": object.id, "action": "Eliminar" }
+				object.delete()
+				return HttpResponse(json.dumps(mensaje))
+			except:
+				mensaje = { "status": "False", "action": "Eliminar" }
+				return HttpResponse(json.dumps(mensaje))
 	return render(request, 'casos_de_uso/actor_list.html', { 'proyecto': proyecto, 'actores': actores })
 
 def ActorDetailView(request, slug, id):

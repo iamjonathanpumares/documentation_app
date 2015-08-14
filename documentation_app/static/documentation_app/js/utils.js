@@ -37,3 +37,35 @@ function getNoFilasTabla(id_tabla)
 
 	return no_filas;
 }
+
+function deleteElement(id_container, id_form, id_modal)
+{
+	var options = {
+	  dataType: 'json',
+	  success: function(response)
+	  {
+	    if(response.status=="True"){
+	      alert("Eliminado!");
+	      var id = response.id;
+	      var no_elementos= $('#' + id_container).children('div').length;
+
+	      if(no_elementos==1) 
+	      {
+	        location.reload();
+	      }
+	      else 
+	      {
+	        $('#div' + id).remove();
+	        $('#' + id_modal).modal('hide');
+	      }
+	    }
+	    else
+	    {
+	      alert("Hubo un error al eliminar!");
+	      $('#' + id_modal).modal('hide');
+	    }
+	  }
+	};
+	console.log(options.success);
+	$('#' + id_form).ajaxForm(options);
+}

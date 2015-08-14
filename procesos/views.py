@@ -1,9 +1,13 @@
+import json
+
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Max
 from django.views.generic import ListView, TemplateView
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
+
 from .forms import ProcesoForm
 from .models import Actividad, Proceso
 from .serializers import ActividadSerializer
@@ -52,13 +56,13 @@ class ProcesoListView(ListView):
 	model = Proceso
 
 	def post(self, request, *args, **kwargs):
-		# Elimina un Proceso en la lista
-		if 'proyecto_id' in request.POST:
+		# Elimina un proceso en la lista
+		if 'proceso' in request.POST:
+			id_proceso = request.POST['proceso']
 			try:
-				id_proyecto = request.POST['proyecto_id']
-				proyecto = Proyecto.objects.get(pk=id_proyecto)
-				mensaje = { "status": "True", "proyecto_id": proyecto.id, "action": "Eliminar" }
-				proyecto.delete()
+				object = Proceso.objects.get(pk=id_proceso)
+				mensaje = { "status": "True", "id": object.id, "action": "Eliminar" }
+				object.delete()
 				return HttpResponse(json.dumps(mensaje))
 			except:
 				mensaje = { "status": "False", "action": "Eliminar" }
