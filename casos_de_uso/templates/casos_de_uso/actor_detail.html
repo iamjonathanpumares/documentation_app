@@ -113,17 +113,16 @@
                                             </tr>
                                         </thead>
                                         <tbody id="id_tbody_tareas" class="TableBody">
+                                        	<tr id="id_row_0" class="TableBody-row fila-base">
+											    <td class="TableBody-data TableBody--no"></td>
+											    <td class="TableBody-data TableBody--descripcion">Descripción</td>    
+											</tr>
 
                                         	{% for tarea in tareas %}
                                             <tr id="id_row_{{ tarea.id }}" class="TableBody-row">
                                                 <td class="TableBody-data TableBody--no"></td>
                                                 <td class="TableBody-data TableBody--descripcion">{{ tarea.descripcion }}</td>    
                                             </tr>
-                                            {% empty %}
-											<tr id="id_row_0" class="TableBody-row fila-base">
-											    <td class="TableBody-data TableBody--no"></td>
-											    <td class="TableBody-data TableBody--descripcion">Descripción</td>    
-											</tr>
                                             {% endfor %}
 
                                         </tbody>

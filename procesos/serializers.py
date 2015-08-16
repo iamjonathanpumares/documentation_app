@@ -5,4 +5,4 @@ class ActividadSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Actividad
-		fields = ('proceso', 'nombre_actividad', 'tipo_actividad', 'orden',)
+		fields = ('proceso', 'responsable', 'nombre_actividad', 'tipo_actividad', 'orden',)

@@ -1,15 +1,16 @@
 import json
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Max
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, View
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 
 from .forms import ProcesoForm
-from .models import Actividad, Proceso
+from .models import Actividad, Proceso, Responsable
 from .serializers import ActividadSerializer
 from proyectos.models import Proyecto
 
@@ -79,19 +80,32 @@ class ProcesoListView(ListView):
 	    context['proyecto'] = get_object_or_404(Proyecto, slug=slug)
 	    return context
 
-class ProcesoDetailTemplateView(TemplateView):
+def ProcesoDetailView(request, id):
 	template_name = 'procesos/proceso_detail.html'
+	context = {}
 
-	def get_context_data(self, **kwargs):
-	    context = super(ProcesoDetailTemplateView, self).get_context_data(**kwargs)
-	    id = self.kwargs['id']
-	    proceso = get_object_or_404(Proceso, id=id)
-	    context['proceso'] = proceso
-	    orden = proceso.actividades.all().aggregate(Max('orden'))
-	    if not orden['orden__max']:
-	    	context['orden_max'] = 1
-	    else:
-	    	context['orden_max'] = orden['orden__max'] + 1
-	    context['actividades'] = proceso.actividades.all()
-	    return context
+	proceso = get_object_or_404(Proceso, id=id)
+	context['proceso'] = proceso
+
+	responsables = Responsable.objects.filter(proceso__id=id)
+	context['responsables'] = responsables
+
+	orden = proceso.actividades.all().aggregate(Max('orden'))
+	if not orden['orden__max']:
+		context['orden_max'] = 1
+	else:
+		context['orden_max'] = orden['orden__max'] + 1
+
+	context['actividades'] = proceso.actividades.all()
+    
+	if request.method == 'POST':
+		# Elimina un responsable en la lista
+		if 'responsable' in request.POST:
+			id_responsable = request.POST['responsable']
+
+			object = get_object_or_404(Responsable, pk=id_responsable)
+			object.delete()
+			return redirect(reverse('proceso-detail', kwargs={ 'id': id }))
+	return render(request, template_name, context)
+			
 

@@ -9,8 +9,8 @@
 
 	<div id="page-inner">
 
-		<!-- Modal -->
-		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<!-- Modal Delete -->
+		<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -18,20 +18,23 @@
 		        <h4 class="modal-title" id="myModalLabel">Eliminar Proyecto</h4>
 		      </div>
 		      <div class="modal-body">
-		        <p>Desea eliminar todo el contenido de su proyecto <span id="js-spanNameProject"></span>?</p>
+		        <p>Desea eliminar todo el contenido de su actor <span id="id_span_actor"></span>? <br>
+		        	(Esto eliminará igual todas sus actividades involucradas en este proceso)
+		        </p>
+		        
 		      </div>
 		      <div class="modal-footer">
-		      	<form method="post" id="js-frmEliminar">
+		      	<form method="post">
 		      		{% csrf_token %}
-		      		<input type="hidden" id="modal_id_proyecto" name="proyecto_id" />
+		      		<input type="hidden" id="id_responsable_delete" name="responsable" />
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			        <button type="submit" class="btn btn-danger">Eliminar</button>
+			        <input type="submit" class="btn btn-danger" value="Eliminar">
 			    </form>
 		      </div>
 		    </div>
 		  </div>
 		</div>
-		<!-- ./Modal -->
+		<!-- ./Modal Delete -->
 
 		<div class="row">
 	        <div class="col-md-12">
@@ -40,16 +43,96 @@
 	    </div> 
 	    <!-- /. ROW  -->
 
-		<div class="row">
-	        <div class="col-md-12">
-	            <h1 class="page-header">
-	                Actividades - Proceso <span id="id_nombre_proceso-js"></span> <small>(Lista de actividades)</small>
-	            </h1>
-	        </div>
-	    </div> 
-	    <!-- /. ROW  -->
+	    <div class="row">
+		    <div class="col-md-12 col-sm-12">
+		        <div class="well">
+		        	<h1>Proceso: {{ proceso.nombre_proceso }}</h1>
+		        	<h4>
+		        		Instrucciones: <br> 1. Identifique a las áreas o actores involucrados en el proceso. <br>
+		        					   2. Identifique las actividades que realiza cada área o actor durante el proceso y enumerelas en orden cronológico.
+		        	</h4>
+		            <h5>
+		            	Descripción de un proceso: Un proceso es una secuencia de pasos para cumplir un objetivo.
+		            </h5>
+		        </div>
+		    </div>
+		</div>
+		<!-- /. ROW  -->
 
 	    
+
+		<div class="row" id="js-rowProject">
+
+				<div class="col-md-4 col-sm-4" id="div{{ proceso.id }}">
+			    	
+			        <div class="panel panel-info">
+			        	
+				            <div class="panel-heading">
+				                Paso 1: Agregar a los responsables involucrados en el proceso
+				            </div>
+				            <div class="panel-body">
+				            	<form method="post" id="id_form_responsable">
+		            				{% csrf_token %}
+		            				<input type="hidden" name="proceso" value="{{ proceso.id }}">
+
+		            				<div id="id_responsable_error" class="alert alert-danger"></div>
+		            				<div class="form-group">
+		            					<input type="text" id="id_responsable" name="responsable" placeholder="Agregar responsable...">
+		            				</div>
+		            				
+		            				<input type="button" id="id_button_responsable" class="btn btn-info" value="Agregar">
+		            			</form>
+				            </div>
+			        
+			    	</div>
+			    </div>
+
+			    <div class="col-md-8 col-sm-8" id="div{{ proceso.id }}">
+			    	
+			        <div class="panel panel-info">
+			        	
+				            <div class="panel-heading">
+				                <h3>Responsables involucrados en el proceso</h3>
+				            </div>
+
+				            <div class="panel-body">
+
+				            	<div class="table-responsive">
+                                    <table class="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Responsable</th>
+                                                <th>Tipo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="id_tbody_responsables" class="TableBody">
+                                        	<tr id="id_row_0" class="TableBody-row fila-base">
+                                                <td class="TableBoby-data TableBody--no"></td>
+                                                <td class="TableBoby-data TableBody--responsable"></td>
+                                                <td class="TableBody-data TableBody--buttons">
+                                                	<button type="button" id="{{ responsable.id }}" class="btn btn-danger btn-xs delete" data-name="{{ responsable.responsable }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
+                                                </td>    
+                                            </tr>
+                                        	{% for responsable in responsables %}
+                                            <tr id="id_row_{{ responsable.id }}" class="TableBody-row">
+                                                <td class="TableBoby-data TableBody--no">{{ responsable.orden }}</td>
+                                                <td class="TableBoby-data TableBody--responsable">{{ responsable.responsable }}</td>
+                                                <td class="TableBody-data TableBody--buttons">
+                        	                        <button type="button" id="{{ responsable.id }}" class="btn btn-danger btn-xs delete" data-name="{{ responsable.responsable }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
+                        	                    </td>    
+                                            </tr>                              
+                                            {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+				            </div>
+			    	</div>
+			    </div>
+		    
+		</div>
+		<!-- /. ROW  -->
 
 		<div class="row" id="js-rowProject">
 
@@ -65,10 +148,12 @@
 		            				{% csrf_token %}
 		            				<input type="hidden" name="proceso" value="{{ proceso.id }}">
 		            				<input type="hidden" id="id_orden" name="orden" value="{{ orden_max }}">
+
 		            				<div id="id_nombre_actividad_error" class="alert alert-danger"></div>
 		            				<div class="form-group">
 		            					<input type="text" id="id_nombre_actividad" name="nombre_actividad" placeholder="Nombre de la actividad">
 		            				</div>
+
 		            				<div id="id_tipo_actividad_error" class="alert alert-danger"></div>
 		            				<div class="form-group">
 		            					<label>Tipo de actividad: </label>
@@ -78,6 +163,17 @@
 			            					<option value="P">Proceso</option>
 			            					<option value="D">Decisión</option>
 			            					<option value="S">Salida</option>
+			            				</select>
+		            				</div>
+
+		            				<div id="id_select_responsable_error" class="alert alert-danger"></div>
+		            				<div class="form-group">
+		            					<label>Responsable: </label>
+		            					<select name="responsable" id="id_select_responsable" class="form-control">
+		            						<option value="">---------</option>
+		            						{% for responsable in responsables  %}
+		            							<option value="{{ responsable.id }}">{{ responsable.responsable }}</option>
+		            						{% endfor %}
 			            				</select>
 		            				</div>
 		            				
@@ -97,26 +193,34 @@
 			        <div class="panel panel-info">
 			        	
 				            <div class="panel-heading">
-				                <h3>{{ proceso.nombre_proceso }}</h3>
+				                <h3>Lista de actividades</h3>
 				            </div>
 
 				            <div class="panel-body">
 
 				            	<div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover">
+                                    <table class="table table-striped table-bordered table-hover" id="TableActividad">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
                                                 <th>Actividad</th>
+                                                <th>Responsable</th>
                                                 <th>Tipo</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="id_tbody_actividades" class="TableActividad-body">
+                                        	<tr class="TableActividad-row fila-base">
+                                                <td class="TableActividad-data TableActividad--orden"></td>
+                                                <td class="TableActividad-data TableActividad--actividad"></td>
+                                                <td class="TableActividad-data TableActividad--responsable"></td>
+                                                <td class="TableActividad-data TableActividad--tipoActividad"></td>    
+                                            </tr>
                                         	{% for actividad in actividades %}
-                                            <tr>
-                                                <td>{{ actividad.orden }}</td>
-                                                <td>{{ actividad.nombre_actividad }}</td>
-                                                <td>{{ actividad.tipo_actividad }}</td>    
+                                            <tr class="TableActividad-row">
+                                                <td class="TableActividad-data TableActividad--orden">{{ actividad.orden }}</td>
+                                                <td class="TableActividad-data TableActividad--actividad">{{ actividad.nombre_actividad }}</td>
+                                                <td class="TableActividad-data TableActividad--responsable">{{ actividad.responsable }}</td>
+                                                <td class="TableActividad-data TableActividad--tipoActividad">{{ actividad.tipo_actividad }}</td>    
                                             </tr>
                                             {% endfor %}
 
@@ -147,28 +251,21 @@
 {% endblock js_scripts %}
 
 {% block custom_scripts %}
-	<script src="{% static "proyectos/js/proyecto-list-scripts.js" %}"></script>
+	<script src="{% static "documentation_app/js/utils.js" %}"></script>
+	<!-- <script src="{% static "proyectos/js/proyecto-list-scripts.js" %}"></script>-->
 	<script>
-	/*
-	function ocultarAlert()
-	{
-		$('.alert').slideToggle();
-	}
+	/********************************************************************
+	*	Declaración de elementos del DOM								*
+	*********************************************************************/
+	var $fila = $('#id_tbody_responsables tr:first-child');
+	var $fila_actividad = $('#id_tbody_actividades tr:first-child');
+	var $option = $('#id_select_responsable option:first-child');
 
-	$('.alert').hide();
-	$.getJSON('/api/procesos/1', function (data) {
-		console.log(data);
-		$('#id_nombre_proceso-js').text(data.nombre_proceso);
-		$('.alert').text('Actividad agregada').slideToggle();
-		setTimeout(ocultarAlert, 3000);
-	});
-	*/
-	function ocultarAlert()
-	{
-		$('.alert-success').slideToggle();
-	}
+	
 
-	$('#id_nombre_actividad').focus();
+	enumerarTabla('id_tbody_responsables');
+
+	$('#id_responsable').focus();
 	$('.alert-success').hide();
 	$('.alert-danger').hide();
 
@@ -182,7 +279,6 @@
 				console.log(xhr.responseJSON);
 				console.log(error);
 
-				alert("Antes del if de nombre_actividad");
 				if (typeof(xhr.responseJSON.nombre_actividad[0]) != "undefined")
 				{
 					$('#id_nombre_actividad_error').text(xhr.responseJSON.nombre_actividad[0]).slideDown();
@@ -191,9 +287,8 @@
 				else
 				{
 					alert("No existe error en nombre_actividad");
-					$('#id_nombre_actividad_error').slideUp();
+					$('#id_nombre_actividad_error').slideToggle();
 				}
-				alert("Despues del if de nombre_actividad");
 
 				if (typeof(xhr.responseJSON.tipo_actividad[0]) != "undefined")
 				{
@@ -202,7 +297,17 @@
 				}
 				else
 				{
-					$('#id_tipo_actividad_error').slideUp();
+					$('#id_tipo_actividad_error').slideToggle();
+				}
+
+				if (typeof(xhr.responseJSON.responsable[0]) != "undefined")
+				{
+					$('#id_select_responsable_error').text(xhr.responseJSON.responsable[0]).slideDown();
+					$('#id_select_responsable').focus();
+				}
+				else
+				{
+					$('#id_select_responsable_error').slideToggle();
 				}
 				
 				
@@ -210,19 +315,118 @@
 
 		})
 		.done(function (data) {
+			console.log(data);
+			var $clone = $fila_actividad.clone(true);
+			var responsable = $('#id_select_responsable option:selected').text();
 			var tipo_actividad = $('#id_tipo_actividad option:selected').text();
 			var orden_max = parseInt($('#id_orden').val()) + 1;
 			$('#id_orden').val(orden_max);
 
-			$('tbody').append('<tr><td>' + data.orden + '</td><td>' + data.nombre_actividad + '</td><td>' + tipo_actividad + '</td></tr>')
+			$clone.find('.TableActividad--orden').text(data.orden);
+			$clone.find('.TableActividad--actividad').text(data.nombre_actividad);
+			$clone.find('.TableActividad--responsable').text(responsable);
+			$clone.find('.TableActividad--tipoActividad').text(data.tipo_actividad);
+			//$clone.attr('id', 'id_row_' + id);
+			$clone.removeClass('fila-base');
+			$clone.appendTo('#id_tbody_actividades');
+			$clone.fadeIn();
 
 			$('.alert-success').text('Actividad agregada').slideToggle();
 			$('.alert-danger').slideUp();
 			$('#id_nombre_actividad').val('').focus();
 			$('#id_tipo_actividad option:eq(0)').prop('selected', true);
-			setTimeout(ocultarAlert, 3000);
+			$('#id_select_responsable option:eq(0)').prop('selected', true);
+			setTimeout(mostrarOcultarAlertSuccess, 3000);
 		});
 	});
+
+	$('#id_button_responsable').click(function () {
+		console.log($('#id_form_responsable').serialize());
+		ajaxCreateObject('/api/responsables/', $('#id_form_responsable').serialize(), createResponsable);
+	});
+
+	$('#id_responsable').keypress(function (e) {
+		if (e.which == 13)
+		{
+			e.preventDefault();
+		}
+	});
+
+	$('.delete').click(function () {
+		var id = $(this).attr('id');
+        var name = $(this).data('name');
+
+        $('#id_responsable_delete').val(id);
+        $('#id_span_actor').text(name);
+	});
+
+	/********************************************************************
+	*	Funciones usadas dentro de los eventos							*
+	*********************************************************************/
+	function mostrarOcultarAlertSuccess()
+	{
+		$('.alert-success').slideToggle();
+	}
+
+	function ocultarAlertDanger()
+	{
+		$('.alert-danger').slideUp();
+	}
+
+	function agregarOption(value, text)
+	{
+		var $clone = $option.clone(true);
+
+		$clone.val(value);
+		$clone.text(text);
+
+		$clone.appendTo('#id_select_responsable');
+		$clone.fadeIn();
+	}
+
+	/********************************************************************
+	*	Callbacks														*
+	*********************************************************************/
+	function createResponsable(error, data)
+	{
+		if (error)
+		{
+			console.log(error);
+
+			if (error.status == 400)
+			{
+				
+				console.log(error.responseJSON.responsable[0]);
+				var responsable_error = error.responseJSON.responsable[0];
+
+				$('#id_responsable_error').text(responsable_error).slideDown();
+				$('#id_responsable').focus();
+			}
+			
+		}
+		else
+		{
+			console.log(data);
+
+			var $clone = $fila.clone(true);
+			var id = data.id;
+			var id_proceso = data.proceso;
+			var responsable = data.responsable;
+			var no_filas = getNoFilasTabla('id_tbody_responsables');
+
+			$clone.find('.TableBody--no').text(no_filas);
+			$clone.find('.TableBody--responsable').text(responsable);
+			$clone.find('.TableBody--buttons .delete').attr('data-name', responsable).attr('id', id);
+			$clone.attr('id', 'id_row_' + id);
+
+			$clone.removeClass('fila-base');
+			$clone.appendTo('#id_tbody_responsables');
+			$clone.fadeIn();
+			agregarOption(id, responsable);
+			ocultarAlertDanger();
+			$('#id_responsable').val('').focus();
+		}
+	}
 	
 	</script>
 {% endblock custom_scripts %}

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from proyectos.models import Proyecto
-from procesos.models import Proceso, Actividad
+from procesos.models import Proceso, Actividad, Responsable
 from documentacion.models import Paquete, TipoPaquete, Modulo
 from casos_de_uso.models import Tarea, Actor
 
@@ -57,6 +57,15 @@ class SubmoduloTotalesSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Modulo
 		fields = ('nombre_modulo', 'submodulos_totales',)
+
+""" -------------------------------------------------------------------------------
+	app procesos
+--------------------------------------------------------------------------------"""
+
+class ResponsableSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Responsable
+		fields = ('id', 'proceso', 'responsable',)
 
 """ -------------------------------------------------------------------------------
 	app casos_de_uso

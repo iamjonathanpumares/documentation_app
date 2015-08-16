@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 
 from proyectos.models import Proyecto
 from documentacion.models import Modulo, Paquete, TipoPaquete
-from procesos.models import Proceso
+from procesos.models import Proceso, Responsable
 from casos_de_uso.models import Tarea, Actor
 from proyectos.serializers import ProyectoSerializer
 
@@ -99,6 +99,14 @@ def PaqueteRequeridoCreateAPIView(request, pk):
 			paquete_instance.paquetes_requeridos.add(paquete_requerido_instance)
 			return Response(serializer.data)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+""" -------------------------------------------------------------------------------
+	app procesos
+--------------------------------------------------------------------------------"""
+
+class ResponsableCreateAPIView(generics.CreateAPIView):
+	queryset = Responsable.objects.all()
+	serializer_class = serializers.ResponsableSerializer
 
 """ -------------------------------------------------------------------------------
 	app casos_de_uso

@@ -26,7 +26,7 @@ function enumerarTabla(id_tabla)
 	{
 		var id_row = $filas[i].id;
 		var $data = $('#' + id_row + ' td:first-child');
-		$data.text(i + 1);
+		$data.text(i);
 
 	}
 }
@@ -68,4 +68,20 @@ function deleteElement(id_container, id_form, id_modal)
 	};
 	console.log(options.success);
 	$('#' + id_form).ajaxForm(options);
+}
+
+function ajaxCreateObject(url, datos, callback)
+{
+	$.ajax({
+		url: url,
+		type: 'POST',
+		dataType: 'json',
+		data: datos
+	})
+	.done(function (data) {
+		callback(null, data);
+	})
+	.fail(function (xhr, status, error) {
+		callback(xhr, null);
+	});
 }
