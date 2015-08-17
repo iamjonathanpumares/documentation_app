@@ -9,6 +9,9 @@ class Tabla(models.Model):
 	descripcion_tabla = models.CharField('Descripción de la tabla', max_length=150)
 	fecha_creacion = models.DateField('Fecha de creación', auto_now=True)
 
+	def __unicode__(self):
+		return self.nombre_tabla
+
 class Campo(models.Model):
 	tabla = models.ForeignKey(Tabla, related_name='campos')
 	campo = models.CharField('Campo de la tabla', max_length=35)
@@ -17,6 +20,12 @@ class Campo(models.Model):
 	descripcion = models.CharField('Descripción del campo', max_length=100)
 	campo_clave = models.BooleanField('Campo clave')
 
+	def __unicode__(self):
+		return self.campo
+
 class Relacion(models.Model):
 	campo = models.ForeignKey(Campo, related_name='relaciones')
 	tabla_referencia = models.ForeignKey(Tabla, related_name='relaciones')
+
+	def __unicode__(self):
+		return '%s - %s' % (self.campo.campo, self.tabla_referencia.nombre_tabla)

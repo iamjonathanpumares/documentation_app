@@ -12,4 +12,5 @@ urlpatterns = patterns('',
     url(r'^procesos/', include('procesos.urls')),
     url(r'^documentacion/', include('documentacion.urls')),
     url(r'^casos-de-uso/', include('casos_de_uso.urls')),
+    url(r'^diccionario-de-datos/', include('diccionario_de_datos.urls')),
 )

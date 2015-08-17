@@ -1,4 +1,4 @@
-{% extends 'documentacion/base.html' %}
+{% extends 'diccionario_de_datos/base.html' %}
 {% load staticfiles %}
 	
 {% block page_wrapper %}
@@ -8,13 +8,13 @@
         <div class="col-md-12">
         	{% ifequal action 'create' %}
 	            <h1 class="page-header">
-	                Agregar Módulo
+	                Agregar Tabla
 	            </h1>
             {% endifequal %}
 
             {% ifequal action 'update' %}
 	            <h1 class="page-header">
-	                Actualizar Módulo
+	                Actualizar Tabla
 	            </h1>
             {% endifequal %}
         </div>

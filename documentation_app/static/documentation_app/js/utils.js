@@ -66,7 +66,7 @@ function deleteElement(id_container, id_form, id_modal)
 	    }
 	  }
 	};
-	console.log(options.success);
+	
 	$('#' + id_form).ajaxForm(options);
 }
 

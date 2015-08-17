@@ -1,0 +1,122 @@
+{% extends 'diccionario_de_datos/base.html' %}
+{% load staticfiles %}
+
+{% block elements_navbar %}
+    <a href="{% url 'tabla-create' slug=proyecto.slug %}" class="btn btn-success btn-crear-proyecto">Crear Tabla</a>
+{% endblock elements_navbar %}
+
+{% block page_wrapper %}
+
+	<div id="page-inner">
+
+		<!-- Modal -->
+		<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Eliminar Proyecto</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Desea eliminar todo el contenido de su tabla <span id="id_span_tabla"></span>?</p>
+		      </div>
+		      <div class="modal-footer">
+		      	<form method="post" id="js-frmEliminar">
+		      		{% csrf_token %}
+		      		<input type="hidden" id="id_tabla" name="tabla" />
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="submit" class="btn btn-danger">Eliminar</button>
+			    </form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
+		<div class="row">
+	        <div class="col-md-12">
+	            <h1 class="page-header">
+	                Diccionario de datos - {{ proyecto.nombre_proyecto }} <small>(Lista de tablas)</small>
+	            </h1>
+	        </div>
+	    </div> 
+	    <!-- /. ROW  -->
+
+		<div class="row" id="js-rowProject">
+			{% for tabla in tablas %}
+			    <div class="col-md-4 col-sm-4" id="div{{ tabla.id }}">
+			    	
+			        <div class="panel panel-info">
+			        	
+				            <div class="panel-heading">
+				                {{ tabla.nombre_tabla }}
+				            </div>
+				            <div class="panel-body">
+				                <p>{{ tabla.descripcion_tabla }}</p>
+				            </div>
+				            <div class="panel-footer">
+				                Opciones
+				            </div>
+			            
+			            <div class="panel-body">
+				            <div class="flexible-actions">
+				            	<a href="#" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Campos</a>
+
+				            	<a href="#" class="btn btn-primary flexible-item"><i class="fa fa-book "></i> Relaciones</a>
+				            		
+		            			<a href="{% url 'tabla-update' slug=proyecto.slug id=tabla.id %}" class="btn btn-primary flexible-item"><i class="fa fa-edit "></i> Editar</a>
+		            			
+		            		
+		            		
+		            		
+		            			<!-- Button delete trigger modal -->
+								<button id="{{ modulo.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModalDelete" data-id="{{ tabla.id }}" data-name="{{ tabla.nombre_tabla }}"><i class="fa fa-trash-o"></i>
+								  Eliminar
+								</button>
+				            			
+				            	
+		            			
+				            			
+				            		
+				            	
+				            
+				        	</div>
+			        	</div>
+			        
+			    	</div>
+			    </div>
+
+		    {% empty %}
+				<div class="col-md-12 col-sm-12">
+			        <div class="alert alert-warning">
+			            No tienes tablas aún
+			        </div>
+			    </div>
+		    {% endfor %}
+		    
+		</div>
+		<!-- /. ROW  -->
+	</div>
+	<!-- /. PAGE INNER  -->
+
+{% endblock page_wrapper %}
+
+{% block js_scripts %}
+	<script src="{% static "documentation_app/js/jquery.form.min.js" %}"></script>
+{% endblock js_scripts %}
+
+{% block custom_scripts %}
+	<script src="{% static "documentation_app/js/utils.js" %}"></script>
+	<script>
+		$('.delete').click(function () {
+			var id = $(this).data('id');
+			var name = $(this).data('name');
+
+			
+			$('#id_tabla').val(id);
+			$('#id_span_tabla').text(name);
+		});
+
+		deleteElement('js-rowProject', 'js-frmEliminar', 'myModalDelete');
+	</script>
+{% endblock custom_scripts %}

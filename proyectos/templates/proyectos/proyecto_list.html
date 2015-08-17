@@ -74,7 +74,11 @@
 		            			
 		            			<a href="/procesos/{{ proyecto.slug }}" class="btn btn-success flexible-item"><i class="fa fa-book "></i> Procesos</a>
 
-		            			<a href="{% url 'actores-list' slug=proyecto.slug %}" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Casos de uso</a>
+		            			<a href="{% url 'actores-list' slug=proyecto.slug %}" class="btn btn-success flexible-item"><i class="fa fa-book "></i> Casos de uso</a>
+
+		            			<a href="{% url 'tablas-list' slug=proyecto.slug %}" class="btn btn-info flexible-item"><i class="fa fa-book "></i> Diccionario de datos</a>
+
+
 
 		            			<button class="btn btn-warning flexible-item"><i class="fa fa-book "></i> Manual</button>
 				            		
