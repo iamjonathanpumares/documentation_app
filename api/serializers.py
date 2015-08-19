@@ -3,6 +3,7 @@ from proyectos.models import Proyecto
 from procesos.models import Proceso, Actividad, Responsable
 from documentacion.models import Paquete, TipoPaquete, Modulo
 from casos_de_uso.models import Tarea, Actor
+from diccionario_de_datos.models import Campo
 
 class ProyectoSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -80,3 +81,12 @@ class ActorSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Actor
 		fields = ('id', 'rol',)
+
+""" -------------------------------------------------------------------------------
+	app diccionario_de_datos
+--------------------------------------------------------------------------------"""
+
+class CampoSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Campo
+		fields = ('id', 'tabla', 'campo', 'longitud', 'tipo_dato', 'descripcion', 'campo_clave',)

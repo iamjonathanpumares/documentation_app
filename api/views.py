@@ -9,6 +9,7 @@ from proyectos.models import Proyecto
 from documentacion.models import Modulo, Paquete, TipoPaquete
 from procesos.models import Proceso, Responsable
 from casos_de_uso.models import Tarea, Actor
+from diccionario_de_datos.models import Campo
 from proyectos.serializers import ProyectoSerializer
 
 #from .serializers import PaqueteSerializer, SubmoduloTotalesSerializer, ModuloSerializer
@@ -119,6 +120,18 @@ class TareaCreateAPIView(generics.CreateAPIView):
 class ActorDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Actor.objects.all()
 	serializer_class = serializers.ActorSerializer
+
+""" -------------------------------------------------------------------------------
+	app diccionario_de_datos
+--------------------------------------------------------------------------------"""
+
+class CampoCreateAPIView(generics.CreateAPIView):
+	queryset = Campo.objects.all()
+	serializer_class = serializers.CampoSerializer
+
+class CampoDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Campo.objects.all()
+	serializer_class = serializers.CampoSerializer
 
 """@api_view(['GET', 'POST'])
 def ProcesoDetailAPIView(request, id):

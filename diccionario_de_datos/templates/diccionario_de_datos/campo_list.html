@@ -1,0 +1,340 @@
+{% extends 'diccionario_de_datos/base.html' %}
+{% load staticfiles %}
+
+{% block elements_navbar %}
+    <button type="button" id="id_button_add_campo" class="btn btn-primary btn-crear-proyecto" data-toggle="modal" data-target="#myModal">Agregar Campo</button>
+    <!-- Button delete trigger modal -->
+	<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
+	  Eliminar
+	</button>
+{% endblock elements_navbar %}
+
+{% block page_wrapper %}
+
+	<div id="page-inner">
+
+		<!-- Modal Agregar Campo -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Agregar Campo</h4>
+		      </div>
+		      <div class="modal-body">
+		        <form method="post" id="id_form_campo">
+		        	<div class="alert alert-danger">Hola</div>
+		      		{% csrf_token %}
+		      		<input type="hidden" id="id_tabla" name="tabla" value="{{ tabla.id }}" />
+		      		{{ form.as_p }}
+		      		<p>
+		      			<label for="id_llave_primaria">Campo clave:</label>
+			      		<input type="checkbox" id="id_llave_primaria" name="llave_primaria">
+		      		</p>
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <input type="button" id="id_button_campo" class="btn btn-info" value="Agregar">
+			    </form>
+		      </div>
+
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
+		<!-- Modal Eliminar Paquete -->
+		<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Quitar Paquete</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>¿Realmente desea eliminar el campo <span id="id_span_campo"></span>?</p>
+		      </div>
+
+		      <div class="modal-footer">
+		      	<form method="post" id="id_form_campo_delete">
+		      		{% csrf_token %}
+		      		<input type="hidden" id="id_campo_delete" name="campo_delete" />
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <input type="button" id="eliminarButton-js" class="btn btn-info" value="Eliminar">
+			    </form>
+		      </div>
+
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
+		<div class="row">
+		    <div class="col-md-12 col-sm-12">
+		        <div class="well">
+		            <h3><b>Nombre de la tabla:</b> {{ tabla.nombre_tabla }}</h3>
+		            <h4>
+		            	<b>Descripción:</b> {{ tabla.descripcion_tabla }}
+		            </h4>
+		            <h5>
+		            	<b>Fecha de creación:</b> {{ tabla.fecha_creacion }}
+		            </h5>
+		        </div>
+		    </div>
+		</div>
+	    <!-- /. ROW  -->
+
+	    <a name="lista_paquetes"></a>
+
+		<div class="row" id="js-rowProject">
+			<h4>Lista de campos</h4>
+			<div class="table-responsive">
+	            <table class="table table-striped table-bordered table-hover">
+	                <thead>
+	                    <tr>
+	                        <th>Campo</th>
+	                        <th>Tamaño</th>
+	                        <th>Tipo de Dato</th>
+	                        <th>Descripción</th>
+	                        <th>Opciones</th>
+	                    </tr>
+	                </thead>
+	                <tbody class="TableBody" id="id_tbody_campos">
+	                	<tr class="TableBody-row fila-base" id="id_row_0">
+	                        <td class="TableBody-data TableBody--campo"></td>
+	                        <td class="TableBody-data TableBody--longitud"></td>
+	                        <td class="TableBody-data TableBody--tipoDato"></td>
+	                        <td class="TableBody-data TableBody--descripcion"></td>
+	                        <td class="TableBody-data TableBody--buttons">
+		                        <a href="#" class="btn btn-primary btn-xs" title="campos requeridos"><i class="fa fa-archive"></i></a>
+		                        <a href="#" class="btn btn-primary btn-xs" title="Lista de campos requeridos"><i class="fa fa-list"></i></a>
+		                        <button type="button" id="{{ campo.id }}" class="btn btn-danger btn-xs delete" data-name="{{ campo.nombre_campo }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
+		                    </td>
+
+	                        
+	                    </tr>
+	                	{% for campo in campos %}
+	                    <tr class="TableBody-row" id="id_row_{{ campo.id }}" data-campo_clave="{{ campo.campo_clave }}">
+	                        <td class="TableBody-data TableBody--campo">{{ campo.campo }}</td>
+	                        <td class="TableBody-data TableBody--longitud">{{ campo.longitud }}</td>
+	                        <td class="TableBody-data TableBody--tipoDato">{{ campo.tipo_dato }}</td>
+	                        <td class="TableBody-data TableBody--descripcion">{{ campo.descripcion }}</td>
+	                        <td class="TableBody-data TableBody--buttons">
+		                        <a href="#" class="btn btn-primary btn-xs" title="campos requeridos"><i class="fa fa-archive"></i></a>
+		                        <a href="#" class="btn btn-primary btn-xs" title="Lista de campos requeridos"><i class="fa fa-list"></i></a>
+		                        <button type="button" id="{{ campo.id }}" class="btn btn-danger btn-xs delete" data-name="{{ campo.campo }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
+		                    </td>
+
+	                        
+	                    </tr>
+	                    {% endfor %}
+
+	                </tbody>
+	            </table>
+	        </div>
+		    
+		</div>
+		<!-- /. ROW  -->
+
+		
+		<div class="row">
+			
+			<div class="col-md-4">
+				<h4>Campos clave</h4>
+				<div class="table-responsive">
+		            <table class="table table-striped table-bordered table-hover">
+		                <thead>
+		                    <tr>
+		                        <th>Campo</th>
+		                    </tr>
+		                </thead>
+		                <tbody class="TableCampoClave" id="id_tbody_campos_clave">
+		                	<tr class="TableCampoClave-row fila-base" id="tr_0">
+		                        <td class="TableCampoClave-data TableCampoClave--campoClave"></td>
+		                    </tr>
+		                	{% for campo in campos_clave %}
+		                    <tr class="TableCampoClave-row" id="tr_{{ campo.id }}">
+		                        <td class="TableCampoClave-data TableCampoClave--campoClave">{{ campo.campo }}</td>
+		                    </tr>
+		                    {% endfor %}
+
+		                </tbody>
+		            </table>
+		        </div>
+			</div> 
+		</div>
+		<!-- /. ROW  -->
+
+	</div>
+	<!-- /. PAGE INNER  -->
+
+{% endblock page_wrapper %}
+
+{% block js_scripts %}
+	<script src="{% static "documentation_app/js/jquery.form.min.js" %}"></script>
+{% endblock js_scripts %}
+
+{% block custom_scripts %}
+	<script src="{% static "documentation_app/js/utils.js" %}"></script>
+	<script>
+	/********************************************************************
+	*	Declaración de elementos del DOM								*
+	*********************************************************************/
+	var $fila = $('#id_tbody_campos tr:first-child');
+	var $fila_campo_clave = $('#id_tbody_campos_clave tr:first-child');
+
+	function ocultarAlert()
+	{
+		$('.alert-success').slideToggle();
+	}
+
+	$('.alert-success').hide();
+	$('.alert-danger').hide();
+
+	/********************************************************************
+	*	Eventos 														*
+	*********************************************************************/
+	$('#id_button_campo').click(function () {
+		var datos = $('#id_form_campo').serialize();
+		if ($('#id_llave_primaria').is(':checked'))
+		{
+			datos = datos + '&campo_clave=True';
+		}
+		else
+		{
+			datos = datos + '&campo_clave=False';
+		}
+		ajaxCreateObject('/api/campos/', datos, agregarCampo);
+	});
+
+	$('.delete').click(function () {
+		var id = $(this).attr('id');
+        var name = $(this).data('name');
+
+        $('#id_campo_delete').val(id);
+        $('#id_span_campo').text(name);
+	});
+
+	$('#eliminarButton-js').click(function () {
+		var id = $('#id_campo_delete').val();
+		var datos = $('#id_form_campo_delete').serialize();
+		console.log(datos);
+		ajaxDeleteObject('/api/campos/' + id + '/', datos, eliminarCampo);
+	});
+
+	/*
+	$('#formularioDeletePaquete-js').ajaxForm(function () {
+		var id_paquete_delete = $('#id_paquete_delete').val();
+		$('#myModalDelete').modal('hide');
+		$('#tr_' + id_paquete_delete).remove();
+	});
+	*/
+
+	/********************************************************************
+	*	Funciones usadas dentro de los eventos							*
+	*********************************************************************/
+	function agregarCampoClave(val, text)
+	{
+		var $clone = $fila_campo_clave.clone(true);
+
+		$clone.find('.TableCampoClave--campoClave').text(text);
+		$clone.attr('id', 'tr_' + val);
+
+		$clone.removeClass('fila-base');
+		$clone.appendTo('#id_tbody_campos_clave');
+		$clone.fadeIn();
+	}
+
+	function limpiarCampos()
+	{
+		$('#id_campo').val('');
+		$('#id_longitud').val('');
+		$('#id_tipo_dato').val('');
+		$('#id_descripcion').val('');
+		$('#id_llave_primaria').attr('checked', false);
+
+	}
+
+	/********************************************************************
+	*	Callbacks														*
+	*********************************************************************/
+	function agregarCampo(error, data)
+	{
+		if (error)
+		{
+			console.log(error);
+
+			if (error.status == 400)
+			{
+				
+				console.log(error.responseJSON.responsable[0]);
+				var responsable_error = error.responseJSON.responsable[0];
+
+				$('#id_responsable_error').text(responsable_error).slideDown();
+				$('#id_responsable').focus();
+			}
+			
+		}
+		else
+		{
+			console.log(data);
+
+			var $clone = $fila.clone(true);
+			var id = data.id; // Númerico
+			var id_tabla = data.tabla; // Númerico
+			var campo = data.campo; // String
+			var longitud = data.longitud; // Númerico
+			var tipo_dato = data.tipo_dato; // String
+			var descripcion = data.descripcion; // String
+			var campo_clave = data.campo_clave; // Boolean
+			var no_filas = getNoFilasTabla('id_tbody_responsables');
+
+			$clone.find('.TableBody--campo').text(campo);
+			$clone.find('.TableBody--longitud').text(longitud);
+			$clone.find('.TableBody--tipoDato').text(tipo_dato);
+			$clone.find('.TableBody--descripcion').text(descripcion);
+			$clone.find('.TableBody--buttons .delete').attr('data-name', campo).attr('id', id);
+			$clone.attr('id', 'id_row_' + id);
+
+			$('#myModal').modal('hide');
+			$clone.removeClass('fila-base');
+			$clone.appendTo('#id_tbody_campos');
+			$clone.fadeIn();
+			if (campo_clave)
+			{
+				$clone.attr('data-campo_clave', 'True');
+				agregarCampoClave(id, campo);
+			}
+			else
+			{
+				$clone.attr('data-campo_clave', 'False');
+			}
+			limpiarCampos();
+			ocultarAlertDanger();
+		}
+	}
+
+	function eliminarCampo(error, data)
+	{
+		if (error)
+		{
+			alert("Hubo un error al eliminar el campo");
+		}
+		else
+		{
+			var id = $('#id_campo_delete').val();
+			var $fila_borrar = $('#id_row_' + id)
+			var campo_clave = $fila_borrar.data('campo_clave');
+
+			$('#myModalDelete').modal('hide');
+
+			$fila_borrar.remove();
+
+			if (campo_clave == "True")
+			{
+				$('#tr_' + id).remove();
+			}
+
+		}
+	}
+	
+	</script>
+{% endblock custom_scripts %}

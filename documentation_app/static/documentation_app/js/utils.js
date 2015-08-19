@@ -85,3 +85,22 @@ function ajaxCreateObject(url, datos, callback)
 		callback(xhr, null);
 	});
 }
+
+function ajaxDeleteObject(url, datos, callback)
+{
+	$.ajax({
+		headers: {
+		        'X-HTTP-Method-Override': 'DELETE'
+		},
+		url: url,
+		type: 'POST',
+		//dataType: 'json',
+		data: datos
+	})
+	.done(function (data) {
+		callback(null, data);
+	})
+	.fail(function (xhr, status, error) {
+		callback(xhr, null);
+	});
+}

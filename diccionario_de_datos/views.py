@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from proyectos.models import Proyecto
 
 from .models import Tabla
-from .forms import TablaForm
+from .forms import TablaForm, CampoForm
 
 """ 
 	Dos maneras de guardar llaves foraneas a los campos de nuestro modelo
@@ -61,3 +61,15 @@ def TablaCreateView(request, slug, id=None):
 		else:
 			form = TablaForm()
 	return render(request, 'diccionario_de_datos/tabla_form.html', { 'proyecto': proyecto, 'form': form, 'action': action })
+
+def CampoListView(request, slug, id):
+	proyecto = get_object_or_404(Proyecto, slug=slug)
+	tabla = get_object_or_404(Tabla, id=id, proyecto__slug=slug)
+	campos = tabla.campos.all()
+	campos_clave = tabla.campos.filter(campo_clave=True)
+
+	if request.method == 'POST':
+		pass
+	else:
+		form = CampoForm()
+	return render(request, 'diccionario_de_datos/campo_list.html', { 'proyecto': proyecto, 'tabla': tabla, 'campos': campos, 'campos_clave': campos_clave, 'form': form })
