@@ -71,7 +71,7 @@ class ProcesoListView(ListView):
 
 	def get_queryset(self, *args, **kwargs):
 		slug = self.kwargs['slug']
-		procesos = Proceso.objects.filter(proyecto__slug=slug)
+		procesos = Proceso.objects.filter(proyecto__slug=slug).order_by('nombre_proceso')
 		return procesos
 
 	def get_context_data(self, **kwargs):
@@ -96,7 +96,7 @@ def ProcesoDetailView(request, id):
 	else:
 		context['orden_max'] = orden['orden__max'] + 1
 
-	context['actividades'] = proceso.actividades.all()
+	context['actividades'] = proceso.actividades.all().order_by('orden')
     
 	if request.method == 'POST':
 		# Elimina un responsable en la lista

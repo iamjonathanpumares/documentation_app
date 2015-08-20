@@ -47,6 +47,7 @@ class TestView(TemplateView):
 
 class ProyectoListView(ListView):
 	model = Proyecto
+	ordering = ['nombre_proyecto']
 
 	def post(self, request, *args, **kwargs):
 		# Elimina un proyecto en la lista

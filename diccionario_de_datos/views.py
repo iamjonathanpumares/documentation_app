@@ -21,7 +21,7 @@ from .forms import TablaForm, CampoForm
 
 def TablaListView(request, slug):
 	proyecto = get_object_or_404(Proyecto, slug=slug)
-	tablas = Tabla.objects.filter(proyecto__slug=slug)
+	tablas = Tabla.objects.filter(proyecto__slug=slug).order_by('nombre_tabla')
 
 	if request.method == 'POST':
 		# Elimina un tabla en la lista
@@ -68,8 +68,8 @@ def TablaCreateView(request, slug, id=None):
 def CampoListView(request, slug, id):
 	proyecto = get_object_or_404(Proyecto, slug=slug)
 	tabla = get_object_or_404(Tabla, id=id, proyecto__slug=slug)
-	campos = tabla.campos.all()
-	campos_clave = tabla.campos.filter(campo_clave=True)
+	campos = tabla.campos.all().order_by('id')
+	campos_clave = tabla.campos.filter(campo_clave=True).order_by('id')
 	relaciones = []
 	cont = 0
 

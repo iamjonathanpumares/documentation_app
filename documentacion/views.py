@@ -15,7 +15,7 @@ class ModuloListView(ListView):
 
 	def get_queryset(self):
 		slug = self.kwargs['slug']
-		queryset = Modulo.objects.filter(proyecto__slug=slug, modulo_depende=None)
+		queryset = Modulo.objects.filter(proyecto__slug=slug, modulo_depende=None).order_by('nombre_modulo')
 		return queryset
 
 	def get_context_data(self, **kwargs):
@@ -44,7 +44,7 @@ class SubmoduloListView(ListView):
 	def get_queryset(self):
 		slug = self.kwargs['slug']
 		id = self.kwargs['id']
-		queryset = Modulo.objects.filter(proyecto__slug=slug, modulo_depende__id=id)
+		queryset = Modulo.objects.filter(proyecto__slug=slug, modulo_depende__id=id).order_by('nombre_modulo')
 		return queryset
 
 	def get_context_data(self, **kwargs):
@@ -65,10 +65,10 @@ class PaqueteListView(ListView):
 		id = self.kwargs['id']
 		name = self.request.GET.get('q', '')
 		if (name != ''):
-			object_list = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id, tipo_paquete__clave_paquete=name)
+			object_list = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id, tipo_paquete__clave_paquete=name).order_by('nombre_paquete')
 			self.paginate_by = None
 		else:
-			object_list = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id)
+			object_list = Paquete.objects.filter(modulo__proyecto__slug=slug, modulo__id=id).order_by('nombre_paquete')
 			self.paginate_by = 15
 		return object_list
 
@@ -169,8 +169,8 @@ def PaqueteRequeridoView(request, slug, id):
 def PaqueteRequeridoListView(request, slug, id):
 	proyecto = get_object_or_404(Proyecto, slug=slug)
 	paquete = get_object_or_404(Paquete, pk=id)
-	paquetes_modulos = paquete.paquetes_requeridos.exclude(modulo=None)
-	paquetes_independientes = paquete.paquetes_requeridos.filter(modulo=None)
+	paquetes_modulos = paquete.paquetes_requeridos.exclude(modulo=None).order_by('nombre_paquete')
+	paquetes_independientes = paquete.paquetes_requeridos.filter(modulo=None).order_by('nombre_paquete')
 
 	if request.method == 'POST':
 		if 'paquete' in request.POST:

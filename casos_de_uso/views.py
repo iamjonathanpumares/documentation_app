@@ -11,7 +11,7 @@ from .models import Actor
 
 def ActorListView(request, slug):
 	proyecto = get_object_or_404(Proyecto, slug=slug)
-	actores = Actor.objects.filter(proyecto__slug=slug)
+	actores = Actor.objects.filter(proyecto__slug=slug).order_by('rol')
 	if request.method == 'POST':
 		# Elimina un actor en la lista
 		if 'actor' in request.POST:
