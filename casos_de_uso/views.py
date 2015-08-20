@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from proyectos.models import Proyecto
-from documentation_app.utils import DeleteElementUtil
 
 from .forms import ActorForm
 from .models import Actor

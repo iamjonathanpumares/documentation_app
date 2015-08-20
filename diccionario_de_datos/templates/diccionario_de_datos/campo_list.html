@@ -2,7 +2,9 @@
 {% load staticfiles %}
 
 {% block elements_navbar %}
-    <button type="button" id="id_button_add_campo" class="btn btn-primary btn-crear-proyecto" data-toggle="modal" data-target="#myModal">Agregar Campo</button>
+    <button type="button" id="id_button_add_campo" class="btn btn-primary btn-crear-proyecto" data-toggle="modal" data-target="#myModal"><i class="fa fa-pencil"></i>
+    	Agregar Campo
+    </button>
     <!-- Button delete trigger modal -->
 	<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
 	  Eliminar
@@ -26,6 +28,7 @@
 		        	<div class="alert alert-danger">Hola</div>
 		      		{% csrf_token %}
 		      		<input type="hidden" id="id_tabla" name="tabla" value="{{ tabla.id }}" />
+		      		<input type="hidden" id="id_campo_update" name="campo_update" />
 		      		{{ form.as_p }}
 		      		<p>
 		      			<label for="id_llave_primaria">Campo clave:</label>
@@ -104,8 +107,7 @@
 	                        <td class="TableBody-data TableBody--tipoDato"></td>
 	                        <td class="TableBody-data TableBody--descripcion"></td>
 	                        <td class="TableBody-data TableBody--buttons">
-		                        <a href="#" class="btn btn-primary btn-xs" title="campos requeridos"><i class="fa fa-archive"></i></a>
-		                        <a href="#" class="btn btn-primary btn-xs" title="Lista de campos requeridos"><i class="fa fa-list"></i></a>
+	                        	<button id="{{ campo.id }}" class="btn btn-primary btn-xs update" data-campo="{{ campo.campo }}" data-toggle="modal" data-target="#myModal"><i class="fa fa-edit"></i></button>
 		                        <button type="button" id="{{ campo.id }}" class="btn btn-danger btn-xs delete" data-name="{{ campo.nombre_campo }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
 		                    </td>
 
@@ -118,9 +120,8 @@
 	                        <td class="TableBody-data TableBody--tipoDato">{{ campo.tipo_dato }}</td>
 	                        <td class="TableBody-data TableBody--descripcion">{{ campo.descripcion }}</td>
 	                        <td class="TableBody-data TableBody--buttons">
-		                        <a href="#" class="btn btn-primary btn-xs" title="campos requeridos"><i class="fa fa-archive"></i></a>
-		                        <a href="#" class="btn btn-primary btn-xs" title="Lista de campos requeridos"><i class="fa fa-list"></i></a>
-		                        <button type="button" id="{{ campo.id }}" class="btn btn-danger btn-xs delete" data-name="{{ campo.campo }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
+		                        <button id="{{ campo.id }}" class="btn btn-primary btn-xs update" data-campo="{{ campo.campo }}" data-longitud="{{ campo.longitud }}" data-tipo_dato="{{ campo.tipo_dato }}" data-descripcion="{{ campo.descripcion }}" data-campo_clave="{{ campo.campo_clave }}" data-toggle="modal" data-target="#myModal"><i class="fa fa-edit"></i></button>
+		                        <button id="{{ campo.id }}" class="btn btn-danger btn-xs delete" data-name="{{ campo.campo }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
 		                    </td>
 
 	                        
@@ -193,6 +194,7 @@
 	*	Eventos 														*
 	*********************************************************************/
 	$('#id_button_campo').click(function () {
+		var action = $('#id_button_campo').data('action');
 		var datos = $('#id_form_campo').serialize();
 		if ($('#id_llave_primaria').is(':checked'))
 		{
@@ -202,7 +204,51 @@
 		{
 			datos = datos + '&campo_clave=False';
 		}
-		ajaxCreateObject('/api/campos/', datos, agregarCampo);
+
+		if (action == 'create')
+		{
+			ajaxCreateObject('/api/campos/', datos, agregarCampo);
+		}
+		else if (action == 'update')
+		{
+			var id = $('#id_campo_update').val();
+			ajaxUpdateObject('/api/campos/' + id + '/', datos, actualizarCampo);
+		}
+		
+	});
+
+	$('#id_button_add_campo').click(function () {
+		limpiarCampos();
+		$('#id_campo_update').val('');
+		$('#id_button_campo').data('action', 'create');
+		$('#id_campo').focus();
+	});
+
+	$('.update').click(function () {
+		var id = $(this).attr('id');
+		console.log(id);
+        var campo = $(this).data('campo');
+        var longitud = $(this).data('longitud');
+        var tipo_dato = $(this).data('tipo_dato');
+        var descripcion = $(this).data('descripcion');
+        var campo_clave = $(this).data('campo_clave');
+
+        $('#id_campo_update').val(id);
+        $('#id_campo').val(campo);
+        $('#id_longitud').val(longitud);
+        $('#id_tipo_dato').val(tipo_dato);
+        $('#id_descripcion').val(descripcion);
+
+        if (campo_clave == 'True')
+        {
+        	$('#id_llave_primaria').prop('checked', true);
+        }
+        else
+        {
+        	$('#id_llave_primaria').prop('checked', false);
+        }
+
+        $('#id_button_campo').data('action', 'update');
 	});
 
 	$('.delete').click(function () {
@@ -292,7 +338,13 @@
 			$clone.find('.TableBody--tipoDato').text(tipo_dato);
 			$clone.find('.TableBody--descripcion').text(descripcion);
 			$clone.find('.TableBody--buttons .delete').attr('data-name', campo).attr('id', id);
+			$clone.find('.TableBody--buttons .update').attr('id', id);
 			$clone.attr('id', 'id_row_' + id);
+
+			$clone.find('.TableBody--buttons .update').data('campo', campo);
+			$clone.find('.TableBody--buttons .update').data('longitud', longitud);
+			$clone.find('.TableBody--buttons .update').data('tipo_dato', tipo_dato);
+			$clone.find('.TableBody--buttons .update').data('descripcion', descripcion);
 
 			$('#myModal').modal('hide');
 			$clone.removeClass('fila-base');
@@ -300,15 +352,83 @@
 			$clone.fadeIn();
 			if (campo_clave)
 			{
+				$clone.find('.TableBody--buttons .update').data('campo_clave', 'True');
 				$clone.attr('data-campo_clave', 'True');
 				agregarCampoClave(id, campo);
 			}
 			else
 			{
+				$clone.find('.TableBody--buttons .update').data('campo_clave', 'False');
 				$clone.attr('data-campo_clave', 'False');
 			}
 			limpiarCampos();
 			ocultarAlertDanger();
+		}
+	}
+
+	function actualizarCampo(error, data)
+	{
+		if (error)
+		{
+			console.log(error);
+		}
+		else
+		{
+			console.log(data);
+			var id = data.id; // Númerico
+			var id_tabla = data.tabla; // Númerico
+			var campo = data.campo; // String
+			var longitud = data.longitud; // Númerico
+			var tipo_dato = data.tipo_dato; // String
+			var descripcion = data.descripcion; // String
+			var campo_clave = data.campo_clave; // Boolean
+
+			var $fila_actualizada = $('#id_row_' + id);
+
+			$fila_actualizada.find('.TableBody--campo').text(campo);
+			$fila_actualizada.find('.TableBody--longitud').text(longitud);
+			$fila_actualizada.find('.TableBody--tipoDato').text(tipo_dato);
+			$fila_actualizada.find('.TableBody--descripcion').text(descripcion);
+			$fila_actualizada.find('.TableBody--buttons .delete').attr('data-name', campo).attr('id', id);
+
+			$fila_actualizada.find('.TableBody--buttons .update').data('campo', campo);
+			$fila_actualizada.find('.TableBody--buttons .update').data('longitud', longitud);
+			$fila_actualizada.find('.TableBody--buttons .update').data('tipo_dato', tipo_dato);
+			$fila_actualizada.find('.TableBody--buttons .update').data('descripcion', descripcion);
+
+			$('#myModal').modal('hide');
+
+			if ($('#tr_' + id).length > 0) // Si longitud > 0 el elemento existe
+			{
+				if (campo_clave)
+				{
+					$('#tr_' + id).find('.TableCampoClave--campoClave').text(campo);
+				}
+				else
+				{
+					$('#tr_' + id).remove();
+				}
+				
+			}
+			else
+			{
+				if (campo_clave)
+				{
+					agregarCampoClave(id, campo);
+				}
+				
+			}
+
+			if (campo_clave)
+			{
+				$fila_actualizada.find('.TableBody--buttons .update').data('campo_clave', 'True');
+				$fila_actualizada.attr('data-campo_clave', 'True');	
+			}
+			else
+			{
+				$fila_actualizada.find('.TableBody--buttons .update').data('campo_clave', 'False');
+				$fila_actualizada.attr('data-campo_clave', 'False');
+			}
 		}
 	}
 
