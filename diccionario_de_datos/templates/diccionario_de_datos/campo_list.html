@@ -137,7 +137,7 @@
 
 		
 		<div class="row">
-			
+			<!-- COL -->
 			<div class="col-md-4">
 				<h4>Campos clave</h4>
 				<div class="table-responsive">
@@ -160,7 +160,42 @@
 		                </tbody>
 		            </table>
 		        </div>
-			</div> 
+			</div>
+			<!-- /. COL -->
+
+			<!-- COL -->
+			<div class="col-md-8">
+				<h4>Relaciones</h4>
+				<div class="table-responsive">
+		            <table class="table table-striped table-bordered table-hover">
+		                <thead>
+		                    <tr>
+		                        <th>Campo</th>
+		                        <th>Tabla referencia</th>
+		                    </tr>
+		                </thead>
+		                <tbody class="TableRelacion" id="id_tbody_relaciones">
+		                	<tr class="TableRelacion-row fila-base" id="id_tr_relacion_0">
+		                        <td class="TableRelacion-data TableRelacion--campo"></td>
+		                        <td class="TableRelacion-data TableRelacion--tablaReferencia"></td>
+		                    </tr>
+		                	{% for relacion in relaciones %}
+
+		                		{% for campo in relacion %}
+		                			<tr class="TableRelacion-row" id="id_tr_relacion_{{ campo.id }}">
+		                			    <td class="TableRelacion-data TableRelacion--campo">{{ campo.campo }}</td>
+		                			    <td class="TableRelacion-data TableRelacion--tablaReferencia">{{ campo.tabla_referencia }}</td>
+		                			</tr>
+		                			
+		                		{% endfor %}
+		                    
+		                    {% endfor %}
+
+		                </tbody>
+		            </table>
+		        </div>
+			</div>
+			<!-- /. COL -->
 		</div>
 		<!-- /. ROW  -->
 

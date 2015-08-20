@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
 import json
+# Libreria para hacer debug y ver el contenido de nuestras variables
+# import pdb
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -6,7 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from proyectos.models import Proyecto
 
-from .models import Tabla
+from .models import Tabla, Relacion
 from .forms import TablaForm, CampoForm
 
 """ 
@@ -67,9 +70,21 @@ def CampoListView(request, slug, id):
 	tabla = get_object_or_404(Tabla, id=id, proyecto__slug=slug)
 	campos = tabla.campos.all()
 	campos_clave = tabla.campos.filter(campo_clave=True)
+	relaciones = []
+	cont = 0
+
+	for campo_clave in campos_clave:
+		try:
+			relacion = Relacion.objects.filter(campo__id=campo_clave.id)
+			relaciones.append(relacion)
+		except:
+			pass
+
+	# Método para detener y visualizar el contenido de las variables (Debug)		
+	# pdb.set_trace()
 
 	if request.method == 'POST':
 		pass
 	else:
 		form = CampoForm()
-	return render(request, 'diccionario_de_datos/campo_list.html', { 'proyecto': proyecto, 'tabla': tabla, 'campos': campos, 'campos_clave': campos_clave, 'form': form })
+	return render(request, 'diccionario_de_datos/campo_list.html', { 'proyecto': proyecto, 'tabla': tabla, 'campos': campos, 'campos_clave': campos_clave, 'form': form, 'relaciones': relaciones })
