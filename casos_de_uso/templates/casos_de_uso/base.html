@@ -261,7 +261,7 @@
                         </li>
 
                         <li>
-                            <a class="active-menu" href="/documentacion/{{ proyecto.slug }}/"><i class="fa fa-dot-circle-o"></i> Módulos<span class="fa arrow"></span></a>
+                            <a href="/documentacion/{{ proyecto.slug }}/"><i class="fa fa-dot-circle-o"></i> Módulos<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="/documentacion/{{ proyecto.slug }}/">Módulos</a>
@@ -274,6 +274,14 @@
 
                                 </li>
                             </ul>
+                        </li>
+
+                        <li>
+                            <a class="active-menu" href="{% url 'actores-list' slug=proyecto.slug %}"><i class="fa fa-tasks"></i> Casos de uso</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'tablas-list' slug=proyecto.slug %}"><i class="fa fa-book"></i> Diccionario de datos</a>
                         </li>
 
                     </ul>

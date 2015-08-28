@@ -278,6 +278,14 @@
                             </ul>
                         </li>
 
+                        <li>
+                            <a href="{% url 'actores-list' slug=proyecto.slug %}"><i class="fa fa-tasks"></i> Casos de uso</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'tablas-list' slug=proyecto.slug %}"><i class="fa fa-book"></i> Diccionario de datos</a>
+                        </li>
+
                     </ul>
                 {% endblock main_menu %}
 
