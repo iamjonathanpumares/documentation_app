@@ -117,6 +117,10 @@ class TareaCreateAPIView(generics.CreateAPIView):
 	queryset = Tarea.objects.all()
 	serializer_class = serializers.TareaSerializer
 
+class TareaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Tarea.objects.all()
+	serializer_class = serializers.TareaSerializer
+
 class ActorDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Actor.objects.all()
 	serializer_class = serializers.ActorSerializer

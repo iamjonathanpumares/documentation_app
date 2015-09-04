@@ -18,6 +18,7 @@ urlpatterns = patterns('',
 	url(r'^responsables/$', views.ResponsableCreateAPIView.as_view()),
 	# app casos_de_uso ---------------------------------------------------------
 	url(r'^tareas/$', views.TareaCreateAPIView.as_view()),
+	url(r'^tareas/(?P<pk>[0-9]+)/$', views.TareaDetailAPIView.as_view()),
 	url(r'^actores/(?P<pk>[0-9]+)/$', views.ActorDetailAPIView.as_view(), name='api-actor-detail'),
 	# app diccionario_de_datos ---------------------------------------------------------
 	url(r'^campos/$', views.CampoCreateAPIView.as_view()),

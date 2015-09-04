@@ -9,25 +9,55 @@
 
 	<div id="page-inner">
 
-		<!-- Modal -->
+		<!-- Modal Actualizar Caso de Uso -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		        <h4 class="modal-title" id="myModalLabel">Eliminar Proyecto</h4>
+		        <h4 class="modal-title" id="myModalLabel">Actualizar Caso de Uso</h4>
 		      </div>
 		      <div class="modal-body">
-		        <p>Desea eliminar todo el contenido de su proyecto <span id="js-spanNameProject"></span>?</p>
+	        	<form method="post" id="id_form_tarea_update">
+					{% csrf_token %}
+					<input type="hidden" name="tarea" id="id_tarea_update" value="">
+					<input type="hidden" name="actor" id="id_actor_update" value="{{ actor.id }}">
+					<div id="id_nombre_actividad_error" class="alert alert-danger"></div>
+					<div class="form-group">
+						<input type="text" id="id_descripcion_update" name="descripcion" placeholder="Ingrese una tarea o actividad">
+					</div>
+					
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<input type="button" id="id_button_tarea" class="btn btn-info" value="Agregar">
+				</form>
 		      </div>
+
+		    </div>
+		  </div>
+		</div>
+		<!-- ./Modal -->
+
+		<!-- Modal Eliminar Paquete -->
+		<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Quitar Paquete</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>¿Realmente desea eliminar el caso de uso (<span id="id_span_tarea"></span>)?</p>
+		      </div>
+
 		      <div class="modal-footer">
-		      	<form method="post" id="js-frmEliminar">
+		      	<form method="post" id="id_form_tarea_delete">
 		      		{% csrf_token %}
-		      		<input type="hidden" id="modal_id_proyecto" name="proyecto_id" />
+		      		<input type="hidden" id="id_tarea_delete" name="campo_delete" />
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			        <button type="submit" class="btn btn-danger">Eliminar</button>
+			        <input type="button" id="eliminarButton-js" class="btn btn-info" value="Eliminar">
 			    </form>
 		      </div>
+
 		    </div>
 		  </div>
 		</div>
@@ -67,41 +97,31 @@
 
 		<div class="row" id="js-rowProject">
 
-				<div class="col-md-4 col-sm-4" id="div{{ proceso.id }}">
-			    	
+				<div class="col-md-4 col-sm-4" id="div{{ proceso.id }}">	
 			        <div class="panel panel-info">
-			        	
-				            <div class="panel-heading">
-				                Agregar tarea
-				            </div>
-				            <div class="panel-body">
-				            	<form method="post" id="id_form_tarea">
-		            				{% csrf_token %}
-		            				<input type="hidden" name="actor" id="id_actor" value="{{ actor.id }}">
-		            				<div id="id_nombre_actividad_error" class="alert alert-danger"></div>
-		            				<div class="form-group">
-		            					<input type="text" id="id_descripcion" name="descripcion" placeholder="Ingrese una tarea o actividad">
-		            				</div>
-		            				
-		            				<input type="button" id="agregarButton-js" class="btn btn-info" value="Agregar">
-		            			</form>
-
-				            	
-				                <!-- <div><span id="id_orden-js">1</span> <span id="id_nombre_actividad-js">Registro del alumno</span></div>
-				                <div><span id="id_orden-js">2</span> <span id="id_nombre_actividad-js">Autorización de SE</span></div> -->
-				            </div>
-			        
+			            <div class="panel-heading">
+			                Agregar tarea
+			            </div>
+			            <div class="panel-body">
+			            	<form method="post" id="id_form_tarea">
+	            				{% csrf_token %}
+	            				<input type="hidden" name="actor" id="id_actor" value="{{ actor.id }}">
+	            				<div id="id_nombre_actividad_error" class="alert alert-danger"></div>
+	            				<div class="form-group">
+	            					<input type="text" id="id_descripcion" name="descripcion" placeholder="Ingrese una tarea o actividad">
+	            				</div>
+	            				
+	            				<input type="button" id="agregarButton-js" class="btn btn-info" value="Agregar">
+	            			</form>
+			            </div>  
 			    	</div>
 			    </div>
 
-			    <div class="col-md-8 col-sm-8" id="div{{ proceso.id }}">
-			    	
-			        <div class="panel panel-info">
-			        	
+			    <div class="col-md-8 col-sm-8" id="div{{ proceso.id }}">	
+			        <div class="panel panel-info">	
 				            <div class="panel-heading">
 				                <h3>Actor: {{ actor.rol }}</h3>
 				            </div>
-
 				            <div class="panel-body">
 
 				            	<div class="table-responsive">
@@ -110,18 +130,27 @@
                                             <tr>
                                                 <th>No.</th>
                                                 <th>Tarea</th>
+                                                <th>Opciones</th>
                                             </tr>
                                         </thead>
                                         <tbody id="id_tbody_tareas" class="TableBody">
                                         	<tr id="id_row_0" class="TableBody-row fila-base">
 											    <td class="TableBody-data TableBody--no"></td>
-											    <td class="TableBody-data TableBody--descripcion">Descripción</td>    
+											    <td class="TableBody-data TableBody--descripcion">Descripción</td>
+											    <td class="TableBody-data TableBody--buttons">
+											        <button id="{{ tarea.id }}" class="btn btn-primary btn-xs update" data-descripcion="{{ tarea.descripcion }}" data-toggle="modal" data-target="#myModal"><i class="fa fa-edit"></i></button>
+											    	<button type="button" id="{{ tarea.id }}" class="btn btn-danger btn-xs delete" data-name="{{ tarea.nombre_campo }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
+											   	</td>    
 											</tr>
 
                                         	{% for tarea in tareas %}
                                             <tr id="id_row_{{ tarea.id }}" class="TableBody-row">
                                                 <td class="TableBody-data TableBody--no"></td>
-                                                <td class="TableBody-data TableBody--descripcion">{{ tarea.descripcion }}</td>    
+                                                <td class="TableBody-data TableBody--descripcion">{{ tarea.descripcion }}</td>
+                                                <td class="TableBody-data TableBody--buttons">
+                                                	<button id="{{ tarea.id }}" class="btn btn-primary btn-xs update" data-descripcion="{{ tarea.descripcion }}" data-actor="{{ tarea.actor.id }}" data-toggle="modal" data-target="#myModal"><i class="fa fa-edit"></i></button>
+                                                	<button id="{{ tarea.id }}" class="btn btn-danger btn-xs delete" data-descripcion="{{ tarea.descripcion }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
+                                               	</td>   
                                             </tr>
                                             {% endfor %}
 
@@ -150,20 +179,7 @@
 	<script src="{% static "documentation_app/js/utils.js" %}"></script>
 	<script src="{% static "casos_de_uso/js/utils.js" %}"></script>
 	<script>
-	/*
-	function ocultarAlert()
-	{
-		$('.alert').slideToggle();
-	}
-
-	$('.alert').hide();
-	$.getJSON('/api/procesos/1', function (data) {
-		console.log(data);
-		$('#id_nombre_proceso-js').text(data.nombre_proceso);
-		$('.alert').text('Actividad agregada').slideToggle();
-		setTimeout(ocultarAlert, 3000);
-	});
-	*/
+	
 	var $fila = $('#id_tbody_tareas tr:first-child');
 
 	enumerarTabla('id_tbody_tareas');
@@ -192,6 +208,9 @@
 
 				$clone.find('.TableBody--no').text(no_filas);
 				$clone.find('.TableBody--descripcion').text(descripcion);
+				$clone.find('.TableBody--buttons .delete').attr('data-descripcion', descripcion).attr('id', id);
+				$clone.find('.TableBody--buttons .update').data('descripcion', descripcion).attr('id', id);
+				$clone.find('.TableBody--buttons .update').data('actor', id_actor);
 				$clone.attr('id', 'id_row_' + id);
 
 				$clone.removeClass('fila-base');
@@ -202,6 +221,82 @@
 			}
 		});
 	});
+
+	$('.update').click(function () {
+		var id = $(this).attr('id');
+	    var descripcion = $(this).data('descripcion');
+	    var actor = $(this).data('actor');
+
+	    $('#id_tarea_update').val(id);
+	    $('#id_actor_update').val(actor);
+	    $('#id_descripcion_update').val(descripcion).focus();
+	});
+
+	$('.delete').click(function () {
+		var id = $(this).attr('id');
+        var descripcion = $(this).data('descripcion');
+
+        $('#id_tarea_delete').val(id);
+        $('#id_span_tarea').text(descripcion);
+	});
+
+	$('#id_button_tarea').click(function () {
+		var datos = $('#id_form_tarea_update').serialize();
+
+		var id = $('#id_tarea_update').val();
+		ajaxUpdateObject('/api/tareas/' + id + '/', datos, actualizarTarea);
+		
+	});
+
+	$('#eliminarButton-js').click(function () {
+		var id = $('#id_tarea_delete').val();
+		var datos = $('#id_form_tarea_delete').serialize();
+		console.log(datos);
+		ajaxDeleteObject('/api/tareas/' + id + '/', datos, eliminarTarea);
+	});
+
+	function actualizarTarea(error, data)
+	{
+		if (error)
+		{
+			console.log(error);
+		}
+		else
+		{
+			console.log(data);
+			var id = data.id; // Númerico
+			var id_actor = data.actor; // Númerico
+			var descripcion = data.descripcion; // String
+
+			var $fila_actualizada = $('#id_row_' + id);
+
+			$fila_actualizada.find('.TableBody--descripcion').text(descripcion);
+			$fila_actualizada.find('.TableBody--buttons .delete').attr('data-descripcion', descripcion).attr('id', id);
+
+			$fila_actualizada.find('.TableBody--buttons .update').data('descripcion', descripcion);
+			$fila_actualizada.find('.TableBody--buttons .update').data('actor', id_actor);
+
+			$('#myModal').modal('hide');
+		}
+	}
+
+	function eliminarTarea(error, data)
+	{
+		if (error)
+		{
+			alert("Hubo un error al eliminar la tarea");
+			$('#myModalDelete').modal('hide');
+		}
+		else
+		{
+			var id = $('#id_tarea_delete').val();
+			var $fila_borrar = $('#id_row_' + id)
+
+			$('#myModalDelete').modal('hide');
+
+			$fila_borrar.remove();
+		}
+	}
 	
 	</script>
 {% endblock custom_scripts %}
