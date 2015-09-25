@@ -8,6 +8,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('api.urls')),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
     url(r'^proyectos/', include('proyectos.urls')),
     url(r'^procesos/', include('procesos.urls')),
     url(r'^documentacion/', include('documentacion.urls')),
