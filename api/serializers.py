@@ -3,23 +3,11 @@ from proyectos.models import Proyecto
 from procesos.models import Proceso, Actividad, Responsable
 from documentacion.models import Paquete, TipoPaquete, Modulo
 from casos_de_uso.models import Tarea, Actor
-from diccionario_de_datos.models import Campo
+from diccionario_de_datos.models import Campo, TipoDato
 
 class ProyectoSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Proyecto
-
-class ActividadSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Actividad
-		fields = ('nombre_actividad', 'orden',)
-
-class ProcesoSerializer(serializers.ModelSerializer):
-	actividades = ActividadSerializer(many=True, read_only=True)
-
-	class Meta:
-		model = Proceso
-		fields = ('nombre_proceso', 'descripcion_proceso', 'actividades',)
 
 class TipoPaqueteSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -63,6 +51,18 @@ class SubmoduloTotalesSerializer(serializers.ModelSerializer):
 	app procesos
 --------------------------------------------------------------------------------"""
 
+class ActividadSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Actividad
+		fields = ('nombre_actividad', 'orden',)
+
+class ProcesoSerializer(serializers.ModelSerializer):
+	actividades = ActividadSerializer(many=True, read_only=True)
+
+	class Meta:
+		model = Proceso
+		fields = ('nombre_proceso', 'descripcion_proceso', 'actividades',)
+
 class ResponsableSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Responsable
@@ -90,3 +90,8 @@ class CampoSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Campo
 		fields = ('id', 'tabla', 'campo', 'longitud', 'tipo_dato', 'descripcion', 'campo_clave',)
+
+class TipoDatoSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = TipoDato
+		fields = ('id', 'tipo',)

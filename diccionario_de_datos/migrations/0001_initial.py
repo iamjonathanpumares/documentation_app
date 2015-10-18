@@ -16,8 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('campo', models.CharField(max_length=35, verbose_name=b'Campo de la tabla')),
-                ('longitud', models.PositiveSmallIntegerField(verbose_name=b'Longitud del campo')),
-                ('tipo_dato', models.CharField(max_length=35, verbose_name=b'Tipo de dato del campo')),
+                ('longitud', models.PositiveSmallIntegerField(null=True, verbose_name=b'Longitud del campo', blank=True)),
                 ('descripcion', models.CharField(max_length=100, verbose_name=b'Descripci\xc3\xb3n del campo')),
                 ('campo_clave', models.BooleanField(verbose_name=b'Campo clave')),
             ],
@@ -39,6 +38,13 @@ class Migration(migrations.Migration):
                 ('proyecto', models.ForeignKey(related_name='tablas', to='proyectos.Proyecto')),
             ],
         ),
+        migrations.CreateModel(
+            name='TipoDato',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('tipo', models.CharField(max_length=40, verbose_name=b'Tipo de dato')),
+            ],
+        ),
         migrations.AddField(
             model_name='relacion',
             name='tabla_referencia',
@@ -48,5 +54,10 @@ class Migration(migrations.Migration):
             model_name='campo',
             name='tabla',
             field=models.ForeignKey(related_name='campos', to='diccionario_de_datos.Tabla'),
+        ),
+        migrations.AddField(
+            model_name='campo',
+            name='tipo_dato',
+            field=models.ForeignKey(related_name='campos', to='diccionario_de_datos.TipoDato'),
         ),
     ]

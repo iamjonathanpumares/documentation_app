@@ -70,6 +70,21 @@ function deleteElement(id_container, id_form, id_modal)
 	$('#' + id_form).ajaxForm(options);
 }
 
+function ajaxRetrieveObject(url, callback)
+{
+	$.ajax({
+		url: url,
+		type: 'GET',
+		dataType: 'json'
+	})
+	.done(function (data) {
+		callback(null, data);
+	})
+	.fail(function (xhr, status, error) {
+		callback(xhr, null);
+	});
+}
+
 function ajaxCreateObject(url, datos, callback)
 {
 	$.ajax({

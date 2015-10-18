@@ -9,7 +9,7 @@ from proyectos.models import Proyecto
 from documentacion.models import Modulo, Paquete, TipoPaquete
 from procesos.models import Proceso, Responsable
 from casos_de_uso.models import Tarea, Actor
-from diccionario_de_datos.models import Campo
+from diccionario_de_datos.models import Campo, TipoDato
 from proyectos.serializers import ProyectoSerializer
 
 #from .serializers import PaqueteSerializer, SubmoduloTotalesSerializer, ModuloSerializer
@@ -129,13 +129,17 @@ class ActorDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 	app diccionario_de_datos
 --------------------------------------------------------------------------------"""
 
-class CampoCreateAPIView(generics.CreateAPIView):
+class CampoListCreateAPIView(generics.ListCreateAPIView):
 	queryset = Campo.objects.all()
 	serializer_class = serializers.CampoSerializer
 
 class CampoDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Campo.objects.all()
 	serializer_class = serializers.CampoSerializer
+
+class TipoDatoDetailAPIView(generics.RetrieveAPIView):
+	queryset = TipoDato.objects.all()
+	serializer_class = serializers.TipoDatoSerializer
 
 """@api_view(['GET', 'POST'])
 def ProcesoDetailAPIView(request, id):

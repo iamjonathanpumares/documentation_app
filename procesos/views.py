@@ -25,7 +25,7 @@ def ProcesoCreateView(request, slug):
 			return redirect('/procesos/%s/' % proyecto_instance.slug)
 	else:
 		form = ProcesoForm()
-	return render(request, 'procesos/proceso_form.html', { 'form': form, 'action': 'create' })
+	return render(request, 'procesos/proceso_form.html', { 'proyecto': proyecto_instance, 'form': form, 'action': 'create' })
 
 def ProcesoUpdateView(request, slug, id):
 	proceso_instance = get_object_or_404(Proceso, proyecto__slug=slug, id=id)

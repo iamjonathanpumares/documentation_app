@@ -44,4 +44,4 @@ def ActorCreateView(request, slug):
 			return redirect(reverse('actores-list', kwargs={ 'slug': proyecto.slug }))
 	else:
 		form = ActorForm()
-	return render(request, 'casos_de_uso/actor_form.html', { 'form': form, 'action': 'create' })
+	return render(request, 'casos_de_uso/actor_form.html', { 'proyecto': proyecto, 'form': form, 'action': 'create' })

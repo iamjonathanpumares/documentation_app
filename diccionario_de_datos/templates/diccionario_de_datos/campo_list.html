@@ -5,10 +5,6 @@
     <button type="button" id="id_button_add_campo" class="btn btn-primary btn-crear-proyecto" data-toggle="modal" data-target="#myModal"><i class="fa fa-pencil"></i>
     	Agregar Campo
     </button>
-    <!-- Button delete trigger modal -->
-	<button id="{{ proyecto.id }}" type="button" class="btn btn-danger delete flexible-item" data-toggle="modal" data-target="#myModal" data-name="{{ proyecto.nombre_proyecto }}"><i class="fa fa-pencil"></i>
-	  Eliminar
-	</button>
 {% endblock elements_navbar %}
 
 {% block page_wrapper %}
@@ -120,7 +116,7 @@
 	                        <td class="TableBody-data TableBody--tipoDato">{{ campo.tipo_dato }}</td>
 	                        <td class="TableBody-data TableBody--descripcion">{{ campo.descripcion }}</td>
 	                        <td class="TableBody-data TableBody--buttons">
-		                        <button id="{{ campo.id }}" class="btn btn-primary btn-xs update" data-campo="{{ campo.campo }}" data-longitud="{{ campo.longitud }}" data-tipo_dato="{{ campo.tipo_dato }}" data-descripcion="{{ campo.descripcion }}" data-campo_clave="{{ campo.campo_clave }}" data-toggle="modal" data-target="#myModal"><i class="fa fa-edit"></i></button>
+		                        <button id="{{ campo.id }}" class="btn btn-primary btn-xs update" data-campo="{{ campo.campo }}" data-longitud="{{ campo.longitud }}" data-tipo_dato="{{ campo.tipo_dato.id }}" data-descripcion="{{ campo.descripcion }}" data-campo_clave="{{ campo.campo_clave }}" data-toggle="modal" data-target="#myModal"><i class="fa fa-edit"></i></button>
 		                        <button id="{{ campo.id }}" class="btn btn-danger btn-xs delete" data-name="{{ campo.campo }}" data-toggle="modal" data-target="#myModalDelete"><i class="fa fa-trash-o"></i></button>
 		                    </td>
 
@@ -261,7 +257,6 @@
 
 	$('.update').click(function () {
 		var id = $(this).attr('id');
-		console.log(id);
         var campo = $(this).data('campo');
         var longitud = $(this).data('longitud');
         var tipo_dato = $(this).data('tipo_dato');
@@ -271,7 +266,7 @@
         $('#id_campo_update').val(id);
         $('#id_campo').val(campo);
         $('#id_longitud').val(longitud);
-        $('#id_tipo_dato').val(tipo_dato);
+        $('#id_tipo_dato > option[value="' + tipo_dato +'"]').prop('selected', true);;
         $('#id_descripcion').val(descripcion);
 
         if (campo_clave == 'True')
@@ -363,41 +358,55 @@
 			var id_tabla = data.tabla; // Númerico
 			var campo = data.campo; // String
 			var longitud = data.longitud; // Númerico
-			var tipo_dato = data.tipo_dato; // String
+			var id_tipo_dato = data.tipo_dato; // Númerico
 			var descripcion = data.descripcion; // String
 			var campo_clave = data.campo_clave; // Boolean
 			var no_filas = getNoFilasTabla('id_tbody_responsables');
 
-			$clone.find('.TableBody--campo').text(campo);
-			$clone.find('.TableBody--longitud').text(longitud);
-			$clone.find('.TableBody--tipoDato').text(tipo_dato);
-			$clone.find('.TableBody--descripcion').text(descripcion);
-			$clone.find('.TableBody--buttons .delete').attr('data-name', campo).attr('id', id);
-			$clone.find('.TableBody--buttons .update').attr('id', id);
-			$clone.attr('id', 'id_row_' + id);
+			var tipo_dato = '';
+			ajaxRetrieveObject('/api/tipos-datos/' + id_tipo_dato + '/', function (error, data) {
+				if (error)
+				{
+					console.log(error);
+				}
+				else
+				{
+					tipo_dato = data.tipo;
 
-			$clone.find('.TableBody--buttons .update').data('campo', campo);
-			$clone.find('.TableBody--buttons .update').data('longitud', longitud);
-			$clone.find('.TableBody--buttons .update').data('tipo_dato', tipo_dato);
-			$clone.find('.TableBody--buttons .update').data('descripcion', descripcion);
+					$clone.find('.TableBody--campo').text(campo);
+					$clone.find('.TableBody--longitud').text(longitud);
+					$clone.find('.TableBody--tipoDato').text(tipo_dato);
+					$clone.find('.TableBody--descripcion').text(descripcion);
+					$clone.find('.TableBody--buttons .delete').attr('data-name', campo).attr('id', id);
+					$clone.find('.TableBody--buttons .update').attr('id', id);
+					$clone.attr('id', 'id_row_' + id);
 
-			$('#myModal').modal('hide');
-			$clone.removeClass('fila-base');
-			$clone.appendTo('#id_tbody_campos');
-			$clone.fadeIn();
-			if (campo_clave)
-			{
-				$clone.find('.TableBody--buttons .update').data('campo_clave', 'True');
-				$clone.attr('data-campo_clave', 'True');
-				agregarCampoClave(id, campo);
-			}
-			else
-			{
-				$clone.find('.TableBody--buttons .update').data('campo_clave', 'False');
-				$clone.attr('data-campo_clave', 'False');
-			}
-			limpiarCampos();
-			ocultarAlertDanger();
+					$clone.find('.TableBody--buttons .update').data('campo', campo);
+					$clone.find('.TableBody--buttons .update').data('longitud', longitud);
+					$clone.find('.TableBody--buttons .update').data('tipo_dato', id_tipo_dato);
+					$clone.find('.TableBody--buttons .update').data('descripcion', descripcion);
+
+					$('#myModal').modal('hide');
+					$clone.removeClass('fila-base');
+					$clone.appendTo('#id_tbody_campos');
+					$clone.fadeIn();
+					if (campo_clave)
+					{
+						$clone.find('.TableBody--buttons .update').data('campo_clave', 'True');
+						$clone.attr('data-campo_clave', 'True');
+						agregarCampoClave(id, campo);
+					}
+					else
+					{
+						$clone.find('.TableBody--buttons .update').data('campo_clave', 'False');
+						$clone.attr('data-campo_clave', 'False');
+					}
+					limpiarCampos();
+					ocultarAlertDanger();
+				}
+			});
+
+			
 		}
 	}
 
@@ -414,56 +423,69 @@
 			var id_tabla = data.tabla; // Númerico
 			var campo = data.campo; // String
 			var longitud = data.longitud; // Númerico
-			var tipo_dato = data.tipo_dato; // String
+			var id_tipo_dato = data.tipo_dato; // String
 			var descripcion = data.descripcion; // String
 			var campo_clave = data.campo_clave; // Boolean
 
-			var $fila_actualizada = $('#id_row_' + id);
-
-			$fila_actualizada.find('.TableBody--campo').text(campo);
-			$fila_actualizada.find('.TableBody--longitud').text(longitud);
-			$fila_actualizada.find('.TableBody--tipoDato').text(tipo_dato);
-			$fila_actualizada.find('.TableBody--descripcion').text(descripcion);
-			$fila_actualizada.find('.TableBody--buttons .delete').attr('data-name', campo).attr('id', id);
-
-			$fila_actualizada.find('.TableBody--buttons .update').data('campo', campo);
-			$fila_actualizada.find('.TableBody--buttons .update').data('longitud', longitud);
-			$fila_actualizada.find('.TableBody--buttons .update').data('tipo_dato', tipo_dato);
-			$fila_actualizada.find('.TableBody--buttons .update').data('descripcion', descripcion);
-
-			$('#myModal').modal('hide');
-
-			if ($('#tr_' + id).length > 0) // Si longitud > 0 el elemento existe
-			{
-				if (campo_clave)
+			var tipo_dato = '';
+			ajaxRetrieveObject('/api/tipos-datos/' + id_tipo_dato + '/', function (error, data) {
+				if (error)
 				{
-					$('#tr_' + id).find('.TableCampoClave--campoClave').text(campo);
+					console.log(error);
 				}
 				else
 				{
-					$('#tr_' + id).remove();
-				}
-				
-			}
-			else
-			{
-				if (campo_clave)
-				{
-					agregarCampoClave(id, campo);
-				}
-				
-			}
+					tipo_dato = data.tipo;
+					var $fila_actualizada = $('#id_row_' + id);
 
-			if (campo_clave)
-			{
-				$fila_actualizada.find('.TableBody--buttons .update').data('campo_clave', 'True');
-				$fila_actualizada.attr('data-campo_clave', 'True');	
-			}
-			else
-			{
-				$fila_actualizada.find('.TableBody--buttons .update').data('campo_clave', 'False');
-				$fila_actualizada.attr('data-campo_clave', 'False');
-			}
+					$fila_actualizada.find('.TableBody--campo').text(campo);
+					$fila_actualizada.find('.TableBody--longitud').text(longitud);
+					$fila_actualizada.find('.TableBody--tipoDato').text(tipo_dato);
+					$fila_actualizada.find('.TableBody--descripcion').text(descripcion);
+					$fila_actualizada.find('.TableBody--buttons .delete').attr('data-name', campo).attr('id', id);
+
+					$fila_actualizada.find('.TableBody--buttons .update').data('campo', campo);
+					$fila_actualizada.find('.TableBody--buttons .update').data('longitud', longitud);
+					$fila_actualizada.find('.TableBody--buttons .update').data('tipo_dato', id_tipo_dato);
+					$fila_actualizada.find('.TableBody--buttons .update').data('descripcion', descripcion);
+
+					$('#myModal').modal('hide');
+
+					if ($('#tr_' + id).length > 0) // Si longitud > 0 el elemento existe
+					{
+						if (campo_clave)
+						{
+							$('#tr_' + id).find('.TableCampoClave--campoClave').text(campo);
+						}
+						else
+						{
+							$('#tr_' + id).remove();
+						}
+						
+					}
+					else
+					{
+						if (campo_clave)
+						{
+							agregarCampoClave(id, campo);
+						}
+						
+					}
+
+					if (campo_clave)
+					{
+						$fila_actualizada.find('.TableBody--buttons .update').data('campo_clave', 'True');
+						$fila_actualizada.attr('data-campo_clave', 'True');	
+					}
+					else
+					{
+						$fila_actualizada.find('.TableBody--buttons .update').data('campo_clave', 'False');
+						$fila_actualizada.attr('data-campo_clave', 'False');
+					}
+				}
+			});
+
+			
 		}
 	}
 
