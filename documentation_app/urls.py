@@ -1,19 +1,23 @@
-from django.conf.urls import patterns, include, url
+from django.urls import include, re_path
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-urlpatterns = patterns('',
+from documentation_app import views
+
+urlpatterns = [
     # Examples:
     # url(r'^$', 'documentation_app.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^$', RedirectView.as_view(url='/proyectos/')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/', include('api.urls')),
-    url(r'^docs/', include('rest_framework_swagger.urls')),
-    url(r'^proyectos/', include('proyectos.urls')),
-    url(r'^procesos/', include('procesos.urls')),
-    url(r'^documentacion/', include('documentacion.urls')),
-    url(r'^casos-de-uso/', include('casos_de_uso.urls')),
-    url(r'^diccionario-de-datos/', include('diccionario_de_datos.urls')),
-)
+    re_path(r'^$', RedirectView.as_view(url='/proyectos/')),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^api/', include('api.urls')),
+    re_path(r'^signup/$', views.signup, name='signup'),
+    re_path(r'^login/$', views.signin, name='login'),
+    re_path(r'^logout/$', views.signout, name='logout'),
+    re_path(r'^proyectos/', include('proyectos.urls')),
+    re_path(r'^procesos/', include('procesos.urls')),
+    re_path(r'^documentacion/', include('documentacion.urls')),
+    re_path(r'^casos-de-uso/', include('casos_de_uso.urls')),
+    re_path(r'^diccionario-de-datos/', include('diccionario_de_datos.urls')),
+]

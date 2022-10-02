@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.models import User
 from django.db import models
 
 class Proyecto(models.Model):
@@ -11,6 +12,7 @@ class Proyecto(models.Model):
 	frameworks_frontend = models.CharField('Frameworks Frontend utilizados en el proyecto (opcional)', max_length=80, blank=True, help_text='Ejemplo: Angular.js, Backbone.js, Bootstrap, etc.')
 	servidor_web = models.CharField('Servidor web en el que corre el proyecto (opcional)', max_length=50, blank=True, help_text='Ejemplo: Apache, Nginx, Unicorn, Tomcat, Gunicorn, etc.')
 	plugins_libs = models.TextField('Plugins y librerías utilizadas en el proyecto (opcional)', blank=True, help_text='Ejemplo: jQuery, React.js, Fancybox, jQuery UI, etc.')
+	user = models.ForeignKey(User, related_name='proyectos', on_delete=models.CASCADE)
 	fecha_creacion = models.DateField('Fecha de creación', auto_now=True)
 
 	def __unicode__(self):

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 
-from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.http import HttpResponse
 from django.views.generic import ListView
@@ -156,9 +155,9 @@ def PaqueteRequeridoView(request, slug, id):
 					paquete_instance.paquetes_requeridos.add(paquete)
 
 			if 'save' in request.POST:
-				return redirect(reverse('paquetes-requeridos-list', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.id }))
+				return redirect('paquetes-requeridos-list', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.id })
 			elif 'add_another' in request.POST:
-				return redirect(reverse('paquetes-requeridos', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.id }))
+				return redirect('paquetes-requeridos', kwargs={ 'slug': proyecto_instance.slug, 'id': paquete_instance.id })
 	
 	else:
 		form = PaqueteForm()
@@ -178,7 +177,7 @@ def PaqueteRequeridoListView(request, slug, id):
 				id_paquete = request.POST['paquete']
 				paquete_requerido = Paquete.objects.get(pk=id_paquete)
 				paquete.paquetes_requeridos.remove(paquete_requerido)
-				return redirect(reverse('paquetes-requeridos-list', kwargs={ 'slug': proyecto.slug, 'id': paquete.id }))
+				return redirect('paquetes-requeridos-list', kwargs={ 'slug': proyecto.slug, 'id': paquete.id })
 			except:
 				mensaje = { "status": "False" }
 				return HttpResponse(json.dumps(mensaje))

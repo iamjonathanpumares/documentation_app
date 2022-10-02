@@ -1,6 +1,5 @@
 import json
 
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Max
@@ -105,7 +104,7 @@ def ProcesoDetailView(request, id):
 
 			object = get_object_or_404(Responsable, pk=id_responsable)
 			object.delete()
-			return redirect(reverse('proceso-detail', kwargs={ 'id': id }))
+			return redirect('proceso-detail', kwargs={ 'id': id })
 	return render(request, template_name, context)
 			
 

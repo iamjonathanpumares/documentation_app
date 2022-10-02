@@ -1,6 +1,5 @@
 import json
 
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -41,7 +40,7 @@ def ActorCreateView(request, slug):
 			actor = form.save(commit=False)
 			actor.proyecto = proyecto
 			actor.save()
-			return redirect(reverse('actores-list', kwargs={ 'slug': proyecto.slug }))
+			return redirect('actores-list', kwargs={ 'slug': proyecto.slug })
 	else:
 		form = ActorForm()
 	return render(request, 'casos_de_uso/actor_form.html', { 'proyecto': proyecto, 'form': form, 'action': 'create' })
