@@ -1,5 +1,5 @@
 {% extends 'documentacion/base.html' %}
-{% load staticfiles %}
+{% load static %}
 
 {% block elements_navbar %}
     <a href="{% url 'paquetes-requeridos-add' slug=proyecto.slug id=paquete.id %}" class="btn btn-primary btn-crear-proyecto">Agregar Paquete</a>

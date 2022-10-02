@@ -4,7 +4,7 @@ Aplicación hecha en Django para documentar tus proyectos.
 
 ## Requerimientos
 
-Python 2.7
+Python 3.6
 
 ## Configurar entorno de desarrollo
 

@@ -3,7 +3,6 @@ import json
 # Libreria para hacer debug y ver el contenido de nuestras variables
 # import pdb
 
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -50,14 +49,14 @@ def TablaCreateView(request, slug, id=None):
 			form = TablaForm(request.POST, instance=tabla_instance)
 			if form.is_valid():
 				tabla = form.save()
-				return redirect(reverse('tablas-list', kwargs={ 'slug': proyecto.slug }))
+				return redirect('tablas-list', kwargs={ 'slug': proyecto.slug })
 		else:
 			form = TablaForm(request.POST)
 			if form.is_valid():
 				tabla = form.save(commit=False)
 				tabla.proyecto = proyecto
 				tabla.save()
-				return redirect(reverse('tablas-list', kwargs={ 'slug': proyecto.slug }))
+				return redirect('tablas-list', kwargs={ 'slug': proyecto.slug })
 	else:
 		if id:
 			form = TablaForm(instance=tabla_instance)

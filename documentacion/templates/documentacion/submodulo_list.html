@@ -1,5 +1,5 @@
 {% extends 'documentacion/base.html' %}
-{% load staticfiles %}
+{% load static %}
 
 {% block elements_navbar %}
     <a href="/documentacion/submodulos/{{ proyecto.slug }}/{{ modulo_padre.id }}/add/" class="btn btn-success btn-crear-proyecto">Crear submódulo de {{ modulo_padre.nombre_modulo }}</a>

@@ -1,4 +1,5 @@
 import json
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, TemplateView, ListView, DetailView, UpdateView
@@ -16,11 +17,14 @@ from .forms import ProyectoCreateForm, ProyectoUpdateForm
 	    context['action'] = 'create'
 	    return context"""
 
+@login_required
 def ProyectoCreateView(request):
 	if request.method == 'POST':
 		form = ProyectoCreateForm(request.POST)
 		if form.is_valid():
-			proyecto = form.save()
+			new_proyecto = form.save(commit=False)
+			new_proyecto.user = request.user
+			new_proyecto.save()
 			return redirect('/proyectos/')
 	else:
 		form = ProyectoCreateForm()

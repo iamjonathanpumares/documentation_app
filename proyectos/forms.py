@@ -9,7 +9,7 @@ class ProyectoCreateForm(forms.ModelForm):
 		model = Proyecto
 		fields = ('nombre_proyecto', 'descripcion_proyecto', 'lenguajes_utilizados', 'bases_de_datos', 'frameworks_backend', 'frameworks_frontend', 'servidor_web', 'plugins_libs',)
 
-	def save(self):
+	def save(self, commit=True):
 		proyecto = super(ProyectoCreateForm, self).save(commit=False)
 		proyecto.slug = orig = slugify(proyecto.nombre_proyecto)
 
@@ -18,7 +18,8 @@ class ProyectoCreateForm(forms.ModelForm):
 				break
 			proyecto.slug = '%s-%d' % (orig, x)
 
-		proyecto.save()
+		if commit:
+			proyecto.save()
 
 		return proyecto
 
