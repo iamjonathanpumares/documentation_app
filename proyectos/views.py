@@ -1,5 +1,6 @@
 import json
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, TemplateView, ListView, DetailView, UpdateView
@@ -30,8 +31,9 @@ def ProyectoCreateView(request):
 		form = ProyectoCreateForm()
 	return render(request, 'proyectos/proyecto_form.html', { 'form': form, 'action': 'create' })
 
+@login_required
 def ProyectoUpdateView(request, slug):
-	proyecto_instance = get_object_or_404(Proyecto, slug=slug)
+	proyecto_instance = get_object_or_404(Proyecto, slug=slug, user=request.user)
 	nombre_proyecto_anterior = proyecto_instance.nombre_proyecto 
 	if request.method == 'POST':
 		form = ProyectoUpdateForm(request.POST, instance=proyecto_instance)
@@ -49,22 +51,24 @@ class HomeTemplateView(TemplateView):
 class TestView(TemplateView):
 	template_name = 'proyectos/proyecto_template.html'
 
-class ProyectoListView(ListView):
-	model = Proyecto
-	ordering = ['nombre_proyecto']
+class ProyectoListView(LoginRequiredMixin, ListView):
 
 	def post(self, request, *args, **kwargs):
 		# Elimina un proyecto en la lista
 		if 'proyecto_id' in request.POST:
 			try:
 				id_proyecto = request.POST['proyecto_id']
-				proyecto = Proyecto.objects.get(pk=id_proyecto)
+				proyecto = Proyecto.objects.get(pk=id_proyecto, user=request.user)
 				mensaje = { "status": "True", "proyecto_id": proyecto.id, "action": "Eliminar" }
 				proyecto.delete()
 				return HttpResponse(json.dumps(mensaje))
 			except:
 				mensaje = { "status": "False", "action": "Eliminar" }
 				return HttpResponse(json.dumps(mensaje))
+
+	def get_queryset(self):
+		return Proyecto.objects.filter(user=self.request.user)
+	
 
 def buscar_view(request):
 	if 'q' in request.GET:
